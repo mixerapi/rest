@@ -1,7 +1,7 @@
 # CakePHP REST Baker
 
-The missing RESTful API component to CakePHP's bake console. Create RESTful API skeletions in seconds. This is very 
-similiar to https://github.com/cakephp/bake but it removes redirects, flash messages, and other code that is not 
+The missing RESTful API component to CakePHP's bake console. Create RESTful API skeletons in seconds. This is very 
+similar to https://github.com/cakephp/bake but it removes redirects, flash messages, and other code that is not 
 applicable to API only projects. Deletes by default will return an HTTP 204.
 
 ## Installation
