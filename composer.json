@@ -1,0 +1,35 @@
+{
+    "name": "cnizzardini/cakephp-rest-baker",
+    "description": "The missing RESTful API component to CakePHP's bake console. Create RESTful API skeletions in seconds.",
+    "type": "cakephp-plugin",
+    "license": "MIT",
+    "keywords": ["cakephp rest","cakephp4 rest","cakephp rest bake","cakephp api bake"],
+    "require": {
+        "php": ">=7.2",
+        "cakephp/cakephp": "^4.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "RestBaker\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "RestBaker\\Test\\": "tests/"
+        }
+    },
+    "support": {
+        "issues": "https://github.com/cnizzardini/cakephp-rest-baker/issues",
+        "wiki": "https://github.com/cnizzardini/cakephp-rest-baker/wiki",
+        "source": "https://github.com/cnizzardini/cakephp-rest-baker"
+    },
+    "authors": [
+        {
+            "name": "Chris Nizzardini",
+            "role": "Developer"
+        }
+    ]
+}
