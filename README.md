@@ -7,7 +7,7 @@ applicable to API only projects. Deletes by default will return an HTTP 204.
 ## Installation
 
 ```bash
-composer require cnizzardini/cakephp-rest-baker
+composer require mixerapi/cakephp-rest-baker
 bin/cake plugin load RestBaker
 ```
 
