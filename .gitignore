@@ -1,3 +1,7 @@
+# RestBaker specific files #
+############################
+/tests/test_app/App/Controller/*
+
 # CakePHP specific files #
 ##########################
 /config/app_local.php

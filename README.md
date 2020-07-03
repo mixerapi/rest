@@ -24,6 +24,17 @@ public function bootstrap(): void
 
 ## Usage
 
+Add `--theme RestBaker` to your bake commands.
+
+Examples:
+ 
 ```bash
+bin/cake bake bake controller all --theme RestBaker
 bin/cake bake controller {Name} --theme RestBaker
+```
+
+## Unit Tests
+
+```bash
+vendor/bin/phpunit
 ```
