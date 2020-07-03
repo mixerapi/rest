@@ -1,5 +1,8 @@
 # CakePHP REST Baker
 
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/mixerapi/cakephp-rest-baker.svg?style=flat-square)](https://packagist.org/packages/mixerapi/cakephp-rest-baker)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
+
 The missing RESTful API component to CakePHP's bake console. Create RESTful API skeletons in seconds. This is very 
 similar to https://github.com/cakephp/bake but it removes redirects, flash messages, and other code that is not 
 applicable to API only projects. Deletes by default will return an HTTP 204.
@@ -11,7 +14,7 @@ composer require mixerapi/cakephp-rest-baker
 bin/cake plugin load RestBaker
 ```
 
-Alternative after composer installing you can manually load the plugin in your Application:
+Alternatively after composer installing you can manually load the plugin in your Application:
 
 ```php
 # src/Application.php
