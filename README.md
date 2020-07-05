@@ -43,3 +43,9 @@ bin/cake bake controller {Name} --theme RestBaker
 ```bash
 vendor/bin/phpunit
 ```
+
+## Code Standards
+
+```bash
+composer check
+```
