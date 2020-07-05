@@ -34,7 +34,7 @@ Add `--theme RestBaker` to your bake commands.
 Examples:
  
 ```bash
-bin/cake bake bake controller all --theme RestBaker
+bin/cake bake controller all --theme RestBaker
 bin/cake bake controller {Name} --theme RestBaker
 ```
 
