@@ -2,6 +2,8 @@
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/mixerapi/cakephp-rest-baker.svg?style=flat-square)](https://packagist.org/packages/mixerapi/cakephp-rest-baker)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
+[![Build Status](https://travis-ci.org/mixerapi/cakephp-rest-baker.svg?branch=master)](https://travis-ci.org/mixerapi/cakephp-rest-baker)
+[![Coverage Status](https://coveralls.io/repos/github/mixerapi/cakephp-rest-baker/badge.svg?branch=master)](https://coveralls.io/github/mixerapi/cakephp-rest-baker?branch=master)
 
 The missing RESTful API component to CakePHP's bake console. Create RESTful API skeletons in seconds. This is very 
 similar to https://github.com/cakephp/bake but it removes redirects, flash messages, and other code that is not 
