@@ -5,12 +5,12 @@ namespace MixerApiRest\Test\App\Controller;
 
 
 /**
- * Departments Controller
+ * Actors Controller
  *
- * @property \MixerApiRest\Test\App\Model\Table\DepartmentsTable $Departments
- * @method \MixerApiRest\Test\App\Model\Entity\Department[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
+ * @property \App\Model\Table\ActorsTable $Actors
+ * @method \App\Model\Entity\Actor[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
-class DepartmentsController extends AppController
+class ActorsController extends AppController
 {
     /**
      * Index method
@@ -21,16 +21,16 @@ class DepartmentsController extends AppController
     public function index()
     {
         $this->request->allowMethod('get');
-        $departments = $this->paginate($this->Departments);
+        $actors = $this->paginate($this->Actors);
 
-        $this->set(compact('departments'));
-        $this->viewBuilder()->setOption('serialize', 'departments');
+        $this->set(compact('actors'));
+        $this->viewBuilder()->setOption('serialize', 'actors');
     }
 
     /**
      * View method
      *
-     * @param string|null $id Department id.
+     * @param string|null $id Actor id.
      * @return \Cake\Http\Response|null|void Renders view
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      * @throws \Cake\Datasource\Exception\MethodNotAllowedException When invalid method
@@ -39,12 +39,12 @@ class DepartmentsController extends AppController
     {
         $this->request->allowMethod('get');
 
-        $department = $this->Departments->get($id, [
-            'contain' => ['DepartmentEmployees'],
+        $actor = $this->Actors->get($id, [
+            'contain' => ['FilmActors'],
         ]);
 
-        $this->set('department', $department);
-        $this->viewBuilder()->setOption('serialize', 'department');
+        $this->set('actor', $actor);
+        $this->viewBuilder()->setOption('serialize', 'actor');
     }
 
     /**
@@ -57,11 +57,10 @@ class DepartmentsController extends AppController
     public function add()
     {
         $this->request->allowMethod('post');
-        $department = $this->Departments->newEmptyEntity();
-        $department = $this->Departments->patchEntity($department, $this->request->getData());
-        if ($this->Departments->save($department)) {
-            $this->set('department', $department);
-            $this->viewBuilder()->setOption('serialize', 'department');
+        $actor = $this->Actors->newEmptyEntity();
+        $actor = $this->Actors->patchEntity($actor, $this->request->getData());
+        if ($this->Actors->save($actor)) {
+            $this->viewBuilder()->setOption('serialize', 'actor');
             return;
         }
         throw new \Exception("Record not created");
@@ -70,7 +69,7 @@ class DepartmentsController extends AppController
     /**
      * Edit method
      *
-     * @param string|null $id Department id.
+     * @param string|null $id Actor id.
      * @return \Cake\Http\Response|null|void HTTP 200 on successful edit
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      * @throws \Cake\Datasource\Exception\MethodNotAllowedException When invalid method
@@ -79,13 +78,12 @@ class DepartmentsController extends AppController
     public function edit($id = null)
     {
         $this->request->allowMethod(['patch', 'post', 'put']);
-        $department = $this->Departments->get($id, [
+        $actor = $this->Actors->get($id, [
             'contain' => [],
         ]);
-        $department = $this->Departments->patchEntity($department, $this->request->getData());
-        if ($this->Departments->save($department)) {
-            $this->set('department', $department);
-            $this->viewBuilder()->setOption('serialize', 'department');
+        $actor = $this->Actors->patchEntity($actor, $this->request->getData());
+        if ($this->Actors->save($actor)) {
+            $this->viewBuilder()->setOption('serialize', 'actor');
             return;
         }
         throw new \Exception("Record not saved");
@@ -94,7 +92,7 @@ class DepartmentsController extends AppController
     /**
      * Delete method
      *
-     * @param string|null $id Department id.
+     * @param string|null $id Actor id.
      * @return \Cake\Http\Response|null|void HTTP 204 on success
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
      * @throws \Cake\Datasource\Exception\MethodNotAllowedException When invalid method
@@ -103,8 +101,8 @@ class DepartmentsController extends AppController
     public function delete($id = null)
     {
         $this->request->allowMethod(['delete']);
-        $department = $this->Departments->get($id);
-        if ($this->Departments->delete($department)) {
+        $actor = $this->Actors->get($id);
+        if ($this->Actors->delete($actor)) {
             return $this->response->withStatus(204);
         }
         throw new \Exception("Record not deleted");

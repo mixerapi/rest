@@ -11,7 +11,7 @@
 
     <!-- Add any additional test suites you want to run here -->
     <testsuites>
-        <testsuite name="RestBaker">
+        <testsuite name="MixerApiRest">
             <directory>tests/TestCase/</directory>
         </testsuite>
     </testsuites>
@@ -28,6 +28,9 @@
     <filter>
         <whitelist>
             <directory suffix=".php">src/</directory>
+            <exclude>
+                <directory>src/Lib/assets</directory>
+            </exclude>
         </whitelist>
     </filter>
 

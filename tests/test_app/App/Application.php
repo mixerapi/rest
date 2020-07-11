@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace RestBaker\Test\App;
+namespace MixerApiRest\Test\App;
 
 use Cake\Console\CommandCollection;
 use Cake\Http\BaseApplication;
@@ -19,7 +19,7 @@ class Application extends BaseApplication
     public function bootstrap(): void
     {
         $this->addPlugin('Bake');
-        $this->addPlugin('RestBaker');
+        $this->addPlugin('MixerApiRest');
 
     }
 
@@ -31,6 +31,11 @@ class Application extends BaseApplication
 
     public function routes(RouteBuilder $routes): void
     {
-
+        $routes->scope('/', function (RouteBuilder $builder) {
+            $builder->fallbacks();
+            $builder->setExtensions(['json']);
+            $builder->resources('Actors');
+        });
+        parent::routes($routes);
     }
 }

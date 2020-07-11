@@ -56,6 +56,7 @@ define('CORE_TESTS', CORE_PATH . 'tests' . DS);
 define('CORE_TEST_CASES', CORE_TESTS . 'TestCase');
 define('TEST_APP', CORE_TESTS . 'test_app' . DS);
 define('APP', ROOT . 'App' . DS);
+define('CONFIG', ROOT . 'config' . DS);
 
 // phpcs:disable
 @mkdir(LOGS);
