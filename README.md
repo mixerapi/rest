@@ -30,7 +30,7 @@ public function bootstrap(): void
 
 ## Bake Usage
 
-Add `--theme RestBaker` to your bake commands.
+Add `--theme MixerApiRest` to your bake commands.
 
 Examples:
  
