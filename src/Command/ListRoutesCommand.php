@@ -7,7 +7,6 @@ use Cake\Console\Arguments;
 use Cake\Console\Command;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
-use Cake\Core\Configure;
 use Cake\Routing\Router;
 use MixerApiRest\Lib\Route\RouteScanner;
 
@@ -29,7 +28,7 @@ class ListRoutesCommand extends Command
 
         if (defined('TEST_APP')) {
             $parser->addOption('reloadRoutes', [
-                'help' => 'Clears runtime routes, for testing only'
+                'help' => 'Clears runtime routes, for testing only',
             ]);
         }
 

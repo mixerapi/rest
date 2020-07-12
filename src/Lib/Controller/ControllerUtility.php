@@ -5,7 +5,7 @@ namespace MixerApiRest\Lib\Controller;
 
 use Cake\Core\Configure;
 use HaydenPierce\ClassFinder\ClassFinder;
-use MixerApiRest\Lib\Exception\RunTimeException;
+use MixerApiRest\Lib\Exception\InvalidControllerException;
 
 /**
  * Class ControllerUtility
@@ -27,6 +27,30 @@ class ControllerUtility
     public static function getControllersFqn(?string $namespace): array
     {
         $namespace = $namespace ?? Configure::read('App.namespace');
+
         return ClassFinder::getClassesInNamespace("$namespace\Controller");
+    }
+
+    /**
+     * Gets an array of ReflectedControllerDecorators
+     *
+     * @param string[] $controllers An array of controllers as fully qualified name space strings
+     * @param string $namespace Fqn
+     * @return \MixerApiRest\Lib\Controller\ReflectedControllerDecorator[]
+     * @throws \ReflectionException
+     */
+    public static function getReflectedControllerDecorators(array $controllers, string $namespace): array
+    {
+        $decoratedControllers = [];
+
+        foreach ($controllers as $controllerFqn) {
+            try {
+                $decoratedControllers[] = new ReflectedControllerDecorator($controllerFqn, $namespace);
+            } catch (InvalidControllerException $e) {
+                // maybe do something here?
+            }
+        }
+
+        return $decoratedControllers;
     }
 }

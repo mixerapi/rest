@@ -9,8 +9,6 @@ use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Core\Configure;
 use MixerApiRest\Lib\Controller\ControllerUtility;
-use MixerApiRest\Lib\Controller\ReflectedControllerDecorator;
-use MixerApiRest\Lib\Exception\InvalidControllerException;
 use MixerApiRest\Lib\Route\RouteDecoratorFactory;
 use MixerApiRest\Lib\Route\RouteWriter;
 
@@ -38,7 +36,7 @@ class CreateRoutesCommand extends Command
 
         if (defined('TEST_APP')) {
             $parser->addOption('routesFile', [
-                'help' => 'Specifies a name for the routes file, for testing only'
+                'help' => 'Specifies a name for the routes file, for testing only',
             ]);
         }
 
@@ -64,7 +62,6 @@ class CreateRoutesCommand extends Command
             $plugins = Configure::read('App.paths.plugins');
             $configDir = reset($plugins) . DS . $args->getOption('plugin');
         } else {
-
             $namespace = Configure::read('App.namespace');
             $configDir = CONFIG;
         }
@@ -76,15 +73,7 @@ class CreateRoutesCommand extends Command
             $this->abort();
         }
 
-        $decoratedControllers = [];
-
-        foreach ($controllers as $controllerFqn) {
-            try {
-                $decoratedControllers[] = new ReflectedControllerDecorator($controllerFqn, $namespace);
-            } catch (InvalidControllerException $e) {
-                // maybe do something here?
-            }
-        }
+        $decoratedControllers = ControllerUtility::getReflectedControllerDecorators($controllers, $namespace);
 
         $routes = [];
 

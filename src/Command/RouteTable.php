@@ -1,9 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace MixerApiRest\Command;
 
 use Cake\Console\ConsoleIo;
-use MixerApiRest\Lib\Route\RouteDecorator;
 
 /**
  * Class RouteTable
@@ -15,7 +15,7 @@ use MixerApiRest\Lib\Route\RouteDecorator;
 class RouteTable
 {
     /**
-     * @var ConsoleIo
+     * @var \Cake\Console\ConsoleIo
      */
     private $io;
 
@@ -25,7 +25,7 @@ class RouteTable
     private $routeDecorators;
 
     /**
-     * @param ConsoleIo $io ConsoleIo
+     * @param \Cake\Console\ConsoleIo $io ConsoleIo
      * @param \MixerApiRest\Lib\Route\RouteDecorator[] $routeDecorators Array of RouteDecorator
      */
     public function __construct(ConsoleIo $io, array $routeDecorators)
