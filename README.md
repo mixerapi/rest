@@ -36,12 +36,12 @@ Examples:
  
 ```bash
 # bake all your controllers
-bin/cake bake controller all --theme MixerApi/Rest
+bin/cake bake controller all --theme MixerApiRest
 
 # bake a single controller
 bin/cake bake controller {ControllerName} --theme MixerApiRest
 
-# you can even bake the entire application still, mixerapi/rest only deals with controller files
+# you can even bake the entire application still, MixerApiRest only deals with controller files
 bin/cake bake all --everything --theme MixerApiRest
 ```
 
@@ -49,27 +49,18 @@ bin/cake bake all --everything --theme MixerApiRest
 
 Generate route resources with a single command.
 
-##### Create Routes
-
-Scans your controllers and writes CRUD routes to `config/routes.php`
-
 ```bash
+# scans your controllers and writes CRUD routes to `config/routes.php`
 bin/cake mixerapi:rest create
-```
 
-Add the `--plugin` switch to write to `plugins/{YourPlugin}/config/routes.php`
-
-```bash
+# add the `--plugin` switch to write to `plugins/{YourPlugin}/config/routes.php`
 bin/cake mixerapi:rest create --plugin {MyPlugin}
-```
 
-Use `--display` to show the routes that will be created
-
-```bash
+# Use `--display` to show the routes that will be created
 bin/cake mixerapi:rest create --display 
 ```
 
-#### List Current Routes
+#### List Routes
 
 This works similar to `bin/cake routes` but shows only RESTful routes and improves some formatting of information.
 
