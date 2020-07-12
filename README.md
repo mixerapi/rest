@@ -1,9 +1,9 @@
 # MixerApi REST
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/mixerapi/cakephp-rest-baker.svg?style=flat-square)](https://packagist.org/packages/mixerapi/cakephp-rest-baker)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/mixerapi/cakephp-rest.svg?style=flat-square)](https://packagist.org/packages/mixerapi/cakephp-rest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
-[![Build Status](https://travis-ci.org/mixerapi/cakephp-rest-baker.svg?branch=master)](https://travis-ci.org/mixerapi/cakephp-rest-baker)
-[![Coverage Status](https://coveralls.io/repos/github/mixerapi/cakephp-rest-baker/badge.svg?branch=master)](https://coveralls.io/github/mixerapi/cakephp-rest-baker?branch=master)
+[![Build Status](https://travis-ci.org/mixerapi/cakephp-rest.svg?branch=master)](https://travis-ci.org/mixerapi/cakephp-rest)
+[![Coverage Status](https://coveralls.io/repos/github/mixerapi/cakephp-rest/badge.svg?branch=master)](https://coveralls.io/github/mixerapi/cakephp-rest?branch=master)
 
 The missing RESTful API toolkit for CakePHP. 
 
@@ -47,16 +47,15 @@ bin/cake bake all --everything --theme MixerApiRest
 
 ## Route Commands
 
+Generate route resources with a single command.
 
-#### `mixerapi:rest create`
+##### Create Routes
 
-Scan your controllers and writes CRUD routes to `config/routes.php`
+Scans your controllers and writes CRUD routes to `config/routes.php`
 
 ```bash
 bin/cake mixerapi:rest create
 ```
-
-#### `mixerapi:rest create --plugin {MyPlugin}`
 
 Add the `--plugin` switch to write to `plugins/{YourPlugin}/config/routes.php`
 
@@ -64,15 +63,13 @@ Add the `--plugin` switch to write to `plugins/{YourPlugin}/config/routes.php`
 bin/cake mixerapi:rest create --plugin {MyPlugin}
 ```
 
-#### `mixerapi:rest create --display`
-
-Displays the routes that can be created, but does not write anything to the filesystem
+Use `--display` to show the routes that will be created
 
 ```bash
 bin/cake mixerapi:rest create --display 
 ```
 
-#### `mixerapi:rest list`
+#### List Current Routes
 
 This works similar to `bin/cake routes` but shows only RESTful routes and improves some formatting of information.
 
