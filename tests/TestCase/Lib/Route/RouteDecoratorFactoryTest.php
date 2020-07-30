@@ -1,19 +1,19 @@
 <?php
 
-namespace MixerApiRest\Test\TestCase\Lib\Route;
+namespace MixerApi\Rest\Test\TestCase\Lib\Route;
 
 use Cake\TestSuite\TestCase;
-use MixerApiRest\Lib\Controller\ReflectedControllerDecorator;
-use MixerApiRest\Lib\Route\RouteDecorator;
-use MixerApiRest\Lib\Route\RouteDecoratorFactory;
+use MixerApi\Rest\Lib\Controller\ReflectedControllerDecorator;
+use MixerApi\Rest\Lib\Route\RouteDecorator;
+use MixerApi\Rest\Lib\Route\RouteDecoratorFactory;
 
 class RouteDecoratorFactoryTest extends TestCase
 {
     public function testCreateFromReflectedControllerDecorator()
     {
         $reflectedControllerDecorator = new ReflectedControllerDecorator(
-            'MixerApiRest\Test\App\Controller\ActorsController',
-            'MixerApiRest\Test\App'
+            'MixerApi\Rest\Test\App\Controller\ActorsController',
+            'MixerApi\Rest\Test\App'
         );
 
         $routeDecorators = (new RouteDecoratorFactory(''))

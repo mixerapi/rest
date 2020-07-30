@@ -1,5 +1,5 @@
 {
-    "name": "mixerapi/cakephp-rest",
+    "name": "mixerapi/rest",
     "description": "The missing RESTful API component to CakePHP's bake console. Create RESTful API skeletions in seconds.",
     "type": "library",
     "license": "MIT",
@@ -19,13 +19,13 @@
     },
     "autoload": {
         "psr-4": {
-            "MixerApiRest\\": "src/"
+            "MixerApi\\Rest\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "MixerApiRest\\Test\\": "tests/",
-            "MixerApiRest\\Test\\App\\": "tests/test_app/App/"
+            "MixerApi\\Rest\\Test\\": "tests/",
+            "MixerApi\\Rest\\Test\\App\\": "tests/test_app/App/"
         }
     },
     "scripts": {

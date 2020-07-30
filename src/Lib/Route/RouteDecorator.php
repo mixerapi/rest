@@ -1,17 +1,17 @@
 <?php
 declare(strict_types=1);
 
-namespace MixerApiRest\Lib\Route;
+namespace MixerApi\Rest\Lib\Route;
 
 use Cake\Routing\Route\Route;
-use MixerApiRest\Lib\Exception\RestfulRouteException;
+use MixerApi\Rest\Lib\Exception\RestfulRouteException;
 
 /**
  * Class RouteDecorator
  *
  * Decorates a Cake\Routing\Route\Route instance
  *
- * @package MixerApiRest\Lib
+ * @package MixerApi\Rest\Lib
  */
 class RouteDecorator
 {
@@ -88,7 +88,7 @@ class RouteDecorator
 
     /**
      * @param \Cake\Routing\Route\Route $route CakePHP Route
-     * @return \MixerApiRest\Lib\Route\RouteDecorator
+     * @return \MixerApi\Rest\Lib\Route\RouteDecorator
      */
     public function setRoute(Route $route)
     {

@@ -1,11 +1,11 @@
 <?php
 
-namespace MixerApiRest\Test\TestCase\Lib\Route;
+namespace MixerApi\Rest\Test\TestCase\Lib\Route;
 
 use Cake\TestSuite\TestCase;
-use MixerApiRest\Lib\Controller\ReflectedControllerDecorator;
-use MixerApiRest\Lib\Exception\RunTimeException;
-use MixerApiRest\Lib\Route\RouteWriter;
+use MixerApi\Rest\Lib\Controller\ReflectedControllerDecorator;
+use MixerApi\Rest\Lib\Exception\RunTimeException;
+use MixerApi\Rest\Lib\Route\RouteWriter;
 
 class RouteWriterTest extends TestCase
 {
@@ -14,8 +14,8 @@ class RouteWriterTest extends TestCase
         $this->expectException(RunTimeException::class);
 
         $decorator = new ReflectedControllerDecorator(
-            'MixerApiRest\Test\App\Controller\ActorsController',
-            'MixerApiRest\Test\App'
+            'MixerApi\Rest\Test\App\Controller\ActorsController',
+            'MixerApi\Rest\Test\App'
         );
 
         new RouteWriter([$decorator], '/nope/nope/and/nope');

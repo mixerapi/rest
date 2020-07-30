@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace MixerApiRest\Test\App\Model\Entity;
+namespace MixerApi\Rest\Test\App\Model\Entity;
 
 use Cake\ORM\Entity;
 

@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace MixerApiRest\Test\App\Controller;
+namespace MixerApi\Rest\Test\App\Controller;
 
 
 /**
  * Departments Controller
  *
- * @property \MixerApiRest\Test\App\Model\Table\DepartmentsTable $Departments
- * @method \MixerApiRest\Test\App\Model\Entity\Department[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
+ * @property \MixerApi\Rest\Test\App\Model\Table\DepartmentsTable $Departments
+ * @method \MixerApi\Rest\Test\App\Model\Entity\Department[]|\Cake\Datasource\ResultSetInterface paginate($object = null, array $settings = [])
  */
 class DepartmentsController extends AppController
 {

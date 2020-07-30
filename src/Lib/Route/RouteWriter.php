@@ -1,21 +1,21 @@
 <?php
 declare(strict_types=1);
 
-namespace MixerApiRest\Lib\Route;
+namespace MixerApi\Rest\Lib\Route;
 
-use MixerApiRest\Lib\Exception\RunTimeException;
+use MixerApi\Rest\Lib\Exception\RunTimeException;
 
 /**
  * Class RouteWriter
  *
  * Writes routes to `config/routes.php`
  *
- * @package MixerApiRest\Lib\Route
+ * @package MixerApi\Rest\Lib\Route
  */
 class RouteWriter
 {
     /**
-     * @var \MixerApiRest\Lib\Controller\ReflectedControllerDecorator[]
+     * @var \MixerApi\Rest\Lib\Controller\ReflectedControllerDecorator[]
      */
     private $decorators;
 
@@ -25,7 +25,7 @@ class RouteWriter
     private $configDir;
 
     /**
-     * @param \MixerApiRest\Lib\Controller\ReflectedControllerDecorator[] $decorators Array of Decorator instances
+     * @param \MixerApi\Rest\Lib\Controller\ReflectedControllerDecorator[] $decorators Array of Decorator instances
      * @param string $configDir An absolute directory path to userland CakePHP config
      */
     public function __construct(array $decorators, string $configDir)

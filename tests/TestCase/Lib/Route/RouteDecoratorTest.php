@@ -1,12 +1,12 @@
 <?php
 
-namespace MixerApiRest\Test\TestCase\Lib\Route;
+namespace MixerApi\Rest\Test\TestCase\Lib\Route;
 
 use Cake\Routing\Route\Route;
 use Cake\TestSuite\TestCase;
-use MixerApiRest\Lib\Exception\RestfulRouteException;
-use MixerApiRest\Lib\Route\RouteDecorator;
-use MixerApiRest\Lib\Route\RouteFactory;
+use MixerApi\Rest\Lib\Exception\RestfulRouteException;
+use MixerApi\Rest\Lib\Route\RouteDecorator;
+use MixerApi\Rest\Lib\Route\RouteFactory;
 
 class RouteDecoratorTest extends TestCase
 {

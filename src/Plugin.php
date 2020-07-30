@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace MixerApiRest;
+namespace MixerApi\Rest;
 
 use Cake\Console\CommandCollection;
 use Cake\Core\BasePlugin;
 use Cake\Core\PluginApplicationInterface;
-use MixerApiRest\Command as Commands;
+use MixerApi\Rest\Command as Commands;
 
 /**
  * Class Plugin

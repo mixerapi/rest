@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace MixerApiRest\Command;
+namespace MixerApi\Rest\Command;
 
 use Cake\Console\ConsoleIo;
 
@@ -10,7 +10,7 @@ use Cake\Console\ConsoleIo;
  *
  * Write Ascii Table of Routes to console
  *
- * @package MixerApiRest\Command
+ * @package MixerApi\Rest\Command
  */
 class RouteTable
 {
@@ -20,13 +20,13 @@ class RouteTable
     private $io;
 
     /**
-     * @var \MixerApiRest\Lib\Route\RouteDecorator[]
+     * @var \MixerApi\Rest\Lib\Route\RouteDecorator[]
      */
     private $routeDecorators;
 
     /**
      * @param \Cake\Console\ConsoleIo $io ConsoleIo
-     * @param \MixerApiRest\Lib\Route\RouteDecorator[] $routeDecorators Array of RouteDecorator
+     * @param \MixerApi\Rest\Lib\Route\RouteDecorator[] $routeDecorators Array of RouteDecorator
      */
     public function __construct(ConsoleIo $io, array $routeDecorators)
     {

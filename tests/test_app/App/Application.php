@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace MixerApiRest\Test\App;
+namespace MixerApi\Rest\Test\App;
 
 use Cake\Console\CommandCollection;
 use Cake\Http\BaseApplication;
@@ -19,7 +19,7 @@ class Application extends BaseApplication
     public function bootstrap(): void
     {
         $this->addPlugin('Bake');
-        $this->addPlugin('MixerApiRest');
+        $this->addPlugin('MixerApi\Rest');
 
     }
 

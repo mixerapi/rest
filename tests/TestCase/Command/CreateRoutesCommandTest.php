@@ -1,6 +1,6 @@
 <?php
 
-namespace MixerApiRest\Test\TestCase\Command;
+namespace MixerApi\Rest\Test\TestCase\Command;
 
 use Cake\Routing\Route\Route;
 use Cake\Routing\Router;
@@ -12,7 +12,7 @@ class CreateRoutesCommandTest extends TestCase
     use ConsoleIntegrationTestTrait;
 
     public $fixtures = [
-        'plugin.MixerApiRest.Actors'
+        'plugin.MixerApi\Rest.Actors'
     ];
 
     private const ROUTE_FILE = 'routes_test.php';
@@ -20,7 +20,7 @@ class CreateRoutesCommandTest extends TestCase
     public function setUp() : void
     {
         parent::setUp();
-        $this->setAppNamespace('MixerApiRest\Test\App');
+        $this->setAppNamespace('MixerApi\Rest\Test\App');
         $this->useCommandRunner();
 
         unlink(CONFIG . self::ROUTE_FILE);

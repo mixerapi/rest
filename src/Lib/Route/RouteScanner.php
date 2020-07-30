@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace MixerApiRest\Lib\Route;
+namespace MixerApi\Rest\Lib\Route;
 
 use Cake\Routing\Route\Route;
 use Cake\Routing\Router;
@@ -11,7 +11,7 @@ use Cake\Routing\Router;
  *
  * Scans for routes
  *
- * @package MixerApiRest\Lib
+ * @package MixerApi\Rest\Lib
  */
 class RouteScanner
 {
@@ -39,7 +39,7 @@ class RouteScanner
     /**
      * Gets an array of RouteDecorator instances
      *
-     * @return \MixerApiRest\Lib\Route\RouteDecorator[]
+     * @return \MixerApi\Rest\Lib\Route\RouteDecorator[]
      */
     public function getDecoratedRoutes(): array
     {

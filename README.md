@@ -13,8 +13,8 @@ The missing RESTful API toolkit for CakePHP.
 ## Installation
 
 ```bash
-composer require mixerapi/cakephp-rest
-bin/cake plugin load MixerApiRest
+composer require mixerapi/rest
+bin/cake plugin load MixerApi/Rest
 ```
 
 Alternatively after composer installing you can manually load the plugin in your Application:
@@ -24,25 +24,25 @@ Alternatively after composer installing you can manually load the plugin in your
 public function bootstrap(): void
 {
     // other logic...
-    $this->addPlugin('MixerApiRest');
+    $this->addPlugin('MixerApi/Rest');
 }
 ```
 
 ## Bake Usage
 
-Add `--theme MixerApiRest` to your bake commands.
+Add `--theme MixerApi/Rest` to your bake commands.
 
 Examples:
  
 ```bash
 # bake all your controllers
-bin/cake bake controller all --theme MixerApiRest
+bin/cake bake controller all --theme MixerApi/Rest
 
 # bake a single controller
-bin/cake bake controller {ControllerName} --theme MixerApiRest
+bin/cake bake controller {ControllerName} --theme MixerApi/Rest
 
 # you can even bake the entire application still, MixerApiRest only deals with controller files
-bin/cake bake all --everything --theme MixerApiRest
+bin/cake bake all --everything --theme MixerApi/Rest
 ```
 
 ## Route Commands

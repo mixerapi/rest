@@ -1,25 +1,25 @@
 <?php
 
-namespace MixerApiRest\Test\TestCase\Lib\Controller;
+namespace MixerApi\Rest\Test\TestCase\Lib\Controller;
 
 use Cake\TestSuite\TestCase;
-use MixerApiRest\Lib\Controller\ReflectedControllerDecorator;
-use MixerApiRest\Lib\Exception\RunTimeException;
+use MixerApi\Rest\Lib\Controller\ReflectedControllerDecorator;
+use MixerApi\Rest\Lib\Exception\RunTimeException;
 
 class ReflectedControllerDecoratorTest extends TestCase
 {
     public function testConstruct()
     {
         $decorator = new ReflectedControllerDecorator(
-            'MixerApiRest\Test\App\Controller\ActorsController',
-            'MixerApiRest\Test\App'
+            'MixerApi\Rest\Test\App\Controller\ActorsController',
+            'MixerApi\Rest\Test\App'
         );
 
         $this->assertInstanceOf(ReflectedControllerDecorator::class, $decorator);
 
         $decorator = new ReflectedControllerDecorator(
-            new \ReflectionClass('MixerApiRest\Test\App\Controller\ActorsController'),
-            'MixerApiRest\Test\App'
+            new \ReflectionClass('MixerApi\Rest\Test\App\Controller\ActorsController'),
+            'MixerApi\Rest\Test\App'
         );
 
         $this->assertInstanceOf(ReflectedControllerDecorator::class, $decorator);
@@ -29,8 +29,8 @@ class ReflectedControllerDecoratorTest extends TestCase
     {
         $this->expectException(RunTimeException::class);
         $decorator = new ReflectedControllerDecorator(
-            'MixerApiRest\Test\Nope',
-            'MixerApiRest\Test\Nope'
+            'MixerApi\Rest\Test\Nope',
+            'MixerApi\Rest\Test\Nope'
         );
     }
 }

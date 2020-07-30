@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace MixerApiRest\Test\App\Controller;
+namespace MixerApi\Rest\Test\App\Controller;
 
 
 /**

@@ -1,16 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace MixerApiRest\Command;
+namespace MixerApi\Rest\Command;
 
 use Cake\Console\Arguments;
 use Cake\Console\Command;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Core\Configure;
-use MixerApiRest\Lib\Controller\ControllerUtility;
-use MixerApiRest\Lib\Route\RouteDecoratorFactory;
-use MixerApiRest\Lib\Route\RouteWriter;
+use MixerApi\Rest\Lib\Controller\ControllerUtility;
+use MixerApi\Rest\Lib\Route\RouteDecoratorFactory;
+use MixerApi\Rest\Lib\Route\RouteWriter;
 
 /**
  * Class RouteCommand

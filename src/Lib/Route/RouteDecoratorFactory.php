@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace MixerApiRest\Lib\Route;
+namespace MixerApi\Rest\Lib\Route;
 
 use Cake\Utility\Text;
-use MixerApiRest\Lib\Controller\ReflectedControllerDecorator;
-use MixerApiRest\Lib\Exception\RestfulRouteException;
+use MixerApi\Rest\Lib\Controller\ReflectedControllerDecorator;
+use MixerApi\Rest\Lib\Exception\RestfulRouteException;
 
 class RouteDecoratorFactory
 {
@@ -25,8 +25,8 @@ class RouteDecoratorFactory
     /**
      * Creates a RouteDecorator instance from a ReflectedControllerDecorator instance
      *
-     * @param \MixerApiRest\Lib\Controller\ReflectedControllerDecorator $decorator ReflectedControllerDecorator
-     * @return \MixerApiRest\Lib\Route\RouteDecorator[]
+     * @param \MixerApi\Rest\Lib\Controller\ReflectedControllerDecorator $decorator ReflectedControllerDecorator
+     * @return \MixerApi\Rest\Lib\Route\RouteDecorator[]
      */
     public function createFromReflectedControllerDecorator(ReflectedControllerDecorator $decorator): array
     {

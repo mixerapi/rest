@@ -1,18 +1,18 @@
 <?php
 declare(strict_types=1);
 
-namespace MixerApiRest\Lib\Controller;
+namespace MixerApi\Rest\Lib\Controller;
 
 use Cake\Core\Configure;
 use HaydenPierce\ClassFinder\ClassFinder;
-use MixerApiRest\Lib\Exception\InvalidControllerException;
+use MixerApi\Rest\Lib\Exception\InvalidControllerException;
 
 /**
  * Class ControllerUtility
  *
  * Utilities for working with CakePHP controllers
  *
- * @package MixerApiRest\Lib\Controller
+ * @package MixerApi\Rest\Lib\Controller
  */
 class ControllerUtility
 {
@@ -36,7 +36,7 @@ class ControllerUtility
      *
      * @param string[] $controllers An array of controllers as fully qualified name space strings
      * @param string $namespace Fqn
-     * @return \MixerApiRest\Lib\Controller\ReflectedControllerDecorator[]
+     * @return \MixerApi\Rest\Lib\Controller\ReflectedControllerDecorator[]
      * @throws \ReflectionException
      */
     public static function getReflectedControllerDecorators(array $controllers, string $namespace): array

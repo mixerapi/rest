@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace MixerApiRest\Test\Fixture;
+namespace MixerApi\Rest\Test\Fixture;
 
 use Cake\TestSuite\Fixture\TestFixture;
 

@@ -1,15 +1,15 @@
 <?php
 
-namespace MixerApiRest\Test\TestCase\Lib\Controller;
+namespace MixerApi\Rest\Test\TestCase\Lib\Controller;
 
 use Cake\TestSuite\TestCase;
-use MixerApiRest\Lib\Controller\ControllerUtility;
-use MixerApiRest\Lib\Exception\RunTimeException;
+use MixerApi\Rest\Lib\Controller\ControllerUtility;
+use MixerApi\Rest\Lib\Exception\RunTimeException;
 
 class ControllerUtilityTest extends TestCase
 {
     public function testGetControllersFqn()
     {
-        $this->assertIsArray(ControllerUtility::getControllersFqn('MixerApiRest\Test\App'));
+        $this->assertIsArray(ControllerUtility::getControllersFqn('MixerApi\Rest\Test\App'));
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace MixerApiRest\Test\TestCase;
+namespace MixerApi\Rest\Test\TestCase;
 
 use Cake\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
@@ -10,7 +10,7 @@ class BakeTest extends TestCase
     use ConsoleIntegrationTestTrait;
 
     public $fixtures = [
-        'plugin.MixerApiRest.Departments',
+        'plugin.MixerApi\Rest.Departments',
     ];
 
     /** @var string  */
@@ -21,7 +21,7 @@ class BakeTest extends TestCase
     public function setUp() : void
     {
         parent::setUp();
-        $this->setAppNamespace('MixerApiRest\Test\App');
+        $this->setAppNamespace('MixerApi\Rest\Test\App');
         $this->useCommandRunner();
 
         $this->controllers = APP . 'Controller' . DS;
@@ -30,7 +30,7 @@ class BakeTest extends TestCase
 
     public function testBake()
     {
-        $this->exec('bake controller Departments --no-test --theme MixerApiRest');
+        $this->exec('bake controller Departments --no-test --theme MixerApi\Rest');
 
         $assets = TEST . DS . 'assets' . DS;
 

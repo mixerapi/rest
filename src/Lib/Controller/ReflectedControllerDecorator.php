@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace MixerApiRest\Lib\Controller;
+namespace MixerApi\Rest\Lib\Controller;
 
-use MixerApiRest\Lib\Exception\InvalidControllerException;
-use MixerApiRest\Lib\Exception\RunTimeException;
+use MixerApi\Rest\Lib\Exception\InvalidControllerException;
+use MixerApi\Rest\Lib\Exception\RunTimeException;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
@@ -14,7 +14,7 @@ use ReflectionMethod;
  *
  * Decorates an instance of a CakePHP Controller as a ReflectedClass
  *
- * @package MixerApiRest\Lib\Controller
+ * @package MixerApi\Rest\Lib\Controller
  */
 class ReflectedControllerDecorator
 {
@@ -29,8 +29,8 @@ class ReflectedControllerDecorator
      * @param mixed $controller FQN or ReflectionClass
      * @param string $namespace Namespace of the controllers
      * @throws \ReflectionException
-     * @throws \MixerApiRest\Lib\Exception\RunTimeException
-     * @throws \MixerApiRest\Lib\Exception\InvalidControllerException
+     * @throws \MixerApi\Rest\Lib\Exception\RunTimeException
+     * @throws \MixerApi\Rest\Lib\Exception\InvalidControllerException
      */
     public function __construct($controller, string $namespace)
     {
@@ -58,7 +58,7 @@ class ReflectedControllerDecorator
      * Gets a Controllers methods as an array of ReflectionMethod instances
      *
      * @return \ReflectionMethod[]
-     * @throws \MixerApiRest\Lib\Exception\RunTimeException
+     * @throws \MixerApi\Rest\Lib\Exception\RunTimeException
      */
     public function getMethods(): array
     {
