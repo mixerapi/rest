@@ -12,7 +12,7 @@ class CreateRoutesCommandTest extends TestCase
     use ConsoleIntegrationTestTrait;
 
     public $fixtures = [
-        'plugin.MixerApi\Rest.Actors'
+        'plugin.MixerApi/Rest.Actors'
     ];
 
     private const ROUTE_FILE = 'routes_test.php';

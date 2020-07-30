@@ -19,7 +19,7 @@ class Application extends BaseApplication
     public function bootstrap(): void
     {
         $this->addPlugin('Bake');
-        $this->addPlugin('MixerApi\Rest');
+        $this->addPlugin('MixerApi/Rest');
 
     }
 

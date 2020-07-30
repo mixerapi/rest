@@ -10,7 +10,7 @@ class BakeTest extends TestCase
     use ConsoleIntegrationTestTrait;
 
     public $fixtures = [
-        'plugin.MixerApi\Rest.Departments',
+        'plugin.MixerApi/Rest.Departments',
     ];
 
     /** @var string  */
@@ -30,7 +30,7 @@ class BakeTest extends TestCase
 
     public function testBake()
     {
-        $this->exec('bake controller Departments --no-test --theme MixerApi\Rest');
+        $this->exec('bake controller Departments --no-test --theme MixerApi/Rest');
 
         $assets = TEST . DS . 'assets' . DS;
 

@@ -12,7 +12,7 @@ class ListRoutesCommandTest extends TestCase
     use ConsoleIntegrationTestTrait;
 
     public $fixtures = [
-        'plugin.MixerApi\Rest.Actors'
+        'plugin.MixerApi/Rest.Actors'
     ];
 
     public function setUp() : void
