@@ -20,15 +20,15 @@ class ControllerUtility
      * Gets array of controllers fully qualified namespace as strings for the given namespace, defaults to
      * APP.namespace if no argument is given
      *
-     * @param string $namespace Fully qualified namespace
+     * @param string|null $namespace Fully qualified namespace
      * @return string[]
      * @throws \Exception
      */
     public static function getControllersFqn(?string $namespace): array
     {
-        $namespace = $namespace ?? Configure::read('App.namespace');
+        $namespace = $namespace ?? Configure::read('App.namespace') . '\Controller';
 
-        return ClassFinder::getClassesInNamespace("$namespace\Controller");
+        return ClassFinder::getClassesInNamespace($namespace, ClassFinder::RECURSIVE_MODE);
     }
 
     /**
@@ -39,13 +39,13 @@ class ControllerUtility
      * @return \MixerApi\Rest\Lib\Controller\ReflectedControllerDecorator[]
      * @throws \ReflectionException
      */
-    public static function getReflectedControllerDecorators(array $controllers, string $namespace): array
+    public static function getReflectedControllerDecorators(array $controllers): array
     {
         $decoratedControllers = [];
 
         foreach ($controllers as $controllerFqn) {
             try {
-                $decoratedControllers[] = new ReflectedControllerDecorator($controllerFqn, $namespace);
+                $decoratedControllers[] = new ReflectedControllerDecorator($controllerFqn);
             } catch (InvalidControllerException $e) {
                 // maybe do something here?
             }

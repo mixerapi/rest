@@ -24,7 +24,7 @@ class ListRoutesCommandTest extends TestCase
 
     public function testExecute()
     {
-        $this->exec('mixerapi:rest list');
+        $this->exec('mixerapi:rest route list');
         $this->assertOutputContains('actors:index', 'route name');
         $this->assertOutputContains('actors', 'uri template');
         $this->assertOutputContains('GET', 'method(s)');
@@ -33,7 +33,7 @@ class ListRoutesCommandTest extends TestCase
 
     public function testExecuteRoutesNotFound()
     {
-        $this->exec('mixerapi:rest list --reloadRoutes');
+        $this->exec('mixerapi:rest route list --reloadRoutes');
         $this->assertExitError();
     }
 }

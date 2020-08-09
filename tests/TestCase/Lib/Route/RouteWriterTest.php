@@ -14,10 +14,9 @@ class RouteWriterTest extends TestCase
         $this->expectException(RunTimeException::class);
 
         $decorator = new ReflectedControllerDecorator(
-            'MixerApi\Rest\Test\App\Controller\ActorsController',
-            'MixerApi\Rest\Test\App'
+            'MixerApi\Rest\Test\App\Controller\ActorsController'
         );
 
-        new RouteWriter([$decorator], '/nope/nope/and/nope');
+        new RouteWriter([$decorator], '/nope/nope/and/nope', '/');
     }
 }

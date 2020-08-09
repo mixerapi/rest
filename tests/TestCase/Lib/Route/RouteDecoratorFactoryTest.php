@@ -12,11 +12,10 @@ class RouteDecoratorFactoryTest extends TestCase
     public function testCreateFromReflectedControllerDecorator()
     {
         $reflectedControllerDecorator = new ReflectedControllerDecorator(
-            'MixerApi\Rest\Test\App\Controller\ActorsController',
-            'MixerApi\Rest\Test\App'
+            'MixerApi\Rest\Test\App\Controller\ActorsController'
         );
 
-        $routeDecorators = (new RouteDecoratorFactory(''))
+        $routeDecorators = (new RouteDecoratorFactory('MixerApi\Rest\Test\App\Controller', '/'))
             ->createFromReflectedControllerDecorator($reflectedControllerDecorator);
 
         $this->assertIsArray($routeDecorators);

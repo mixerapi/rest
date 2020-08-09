@@ -16,6 +16,7 @@ class CreateRoutesCommandTest extends TestCase
     ];
 
     private const ROUTE_FILE = 'routes_test.php';
+    private const ROUTE_BASE = 'routes_base.php';
 
     public function setUp() : void
     {
@@ -23,14 +24,12 @@ class CreateRoutesCommandTest extends TestCase
         $this->setAppNamespace('MixerApi\Rest\Test\App');
         $this->useCommandRunner();
 
-        unlink(CONFIG . self::ROUTE_FILE);
-        touch(CONFIG . self::ROUTE_FILE);
     }
 
     public function testSuccess()
     {
         $file = self::ROUTE_FILE;
-        $this->exec("mixerapi:rest create --routesFile $file", ['Y']);
+        $this->exec("mixerapi:rest route create --routesFile $file", ['Y']);
         $this->assertOutputContains('Routes were written to ' . CONFIG . $file);
         $this->assertExitSuccess();
     }
@@ -38,14 +37,14 @@ class CreateRoutesCommandTest extends TestCase
     public function testAbort()
     {
         $file = self::ROUTE_FILE;
-        $this->exec("mixerapi:rest create --routesFile $file", ['N']);
+        $this->exec("mixerapi:rest route create --routesFile $file", ['N']);
         $this->assertExitError();
     }
 
     public function testNoControllersExitError()
     {
         $file = self::ROUTE_FILE;
-        $this->exec("mixerapi:rest create --routesFile $file --plugin Nope", ['Y']);
+        $this->exec("mixerapi:rest route create --routesFile $file --plugin Nope", ['Y']);
         $this->assertExitError();
     }
 
@@ -56,7 +55,7 @@ class CreateRoutesCommandTest extends TestCase
 
     public function testDisplaySuccess()
     {
-        $this->exec("mixerapi:rest create --display");
+        $this->exec("mixerapi:rest route create --display");
         $this->assertOutputContains('actors:index', 'route name');
         $this->assertOutputContains('actors', 'uri template');
         $this->assertOutputContains('GET', 'method(s)');

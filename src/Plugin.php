@@ -30,8 +30,8 @@ class Plugin extends BasePlugin
      */
     public function console(CommandCollection $commands): CommandCollection
     {
-        $commands->add('mixerapi:rest list', Commands\ListRoutesCommand::class);
-        $commands->add('mixerapi:rest create', Commands\CreateRoutesCommand::class);
+        $commands->add('mixerapi:rest route list', Commands\ListRoutesCommand::class);
+        $commands->add('mixerapi:rest route create', Commands\CreateRoutesCommand::class);
 
         return $commands;
     }

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace MixerApi\Rest\Lib\Controller;
 
+use Cake\Controller\Controller;
 use MixerApi\Rest\Lib\Exception\InvalidControllerException;
 use MixerApi\Rest\Lib\Exception\RunTimeException;
 use ReflectionClass;
@@ -27,12 +28,11 @@ class ReflectedControllerDecorator
      * Can be instantiated with a fully qualified namespace or ReflectionClass instance
      *
      * @param mixed $controller FQN or ReflectionClass
-     * @param string $namespace Namespace of the controllers
      * @throws \ReflectionException
      * @throws \MixerApi\Rest\Lib\Exception\RunTimeException
      * @throws \MixerApi\Rest\Lib\Exception\InvalidControllerException
      */
-    public function __construct($controller, string $namespace)
+    public function __construct($controller)
     {
         if (is_string($controller)) {
             try {
@@ -44,7 +44,7 @@ class ReflectedControllerDecorator
             $this->reflectedController = $controller;
         }
 
-        if (!$this->reflectedController->isSubclassOf($namespace . '\Controller\AppController')) {
+        if (!$this->reflectedController->isSubclassOf(Controller::class)) {
             throw new InvalidControllerException(
                 sprintf(
                     'Controller `%s` must be a subclass of AppController',
@@ -52,6 +52,50 @@ class ReflectedControllerDecorator
                 )
             );
         }
+    }
+
+    /**
+     * Returns an array of namespaces for the controller, relative to the $baseNamespace argument.
+     *
+     * @param string $baseNamespace the base namespace (e.g. App\Controller)
+     * @return array
+     */
+    public function getPaths(string $baseNamespace): array
+    {
+        $namespace = $this->getReflectedController()->getName();
+        $relativeNs = str_replace($baseNamespace . '\\', '', $namespace);
+
+        $paths = explode('\\', $relativeNs);
+
+        if (empty($paths)) {
+            return [];
+        }
+
+        array_pop($paths);
+
+        if (empty($paths)) {
+            return [];
+        }
+
+        return $paths;
+    }
+
+    /**
+     * Does the controller have a CRUD method: index, view, add, update, and delete
+     *
+     * @return bool
+     */
+    public function hasCrud(): bool
+    {
+        $crud = ['index','view','add','update','delete'];
+
+        foreach ($this->getMethods() as $method) {
+            if (in_array($method->getName(), $crud)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

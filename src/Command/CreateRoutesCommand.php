@@ -8,6 +8,7 @@ use Cake\Console\Command;
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Core\Configure;
+use Cake\Utility\Inflector;
 use MixerApi\Rest\Lib\Controller\ControllerUtility;
 use MixerApi\Rest\Lib\Route\RouteDecoratorFactory;
 use MixerApi\Rest\Lib\Route\RouteWriter;
@@ -32,6 +33,12 @@ class CreateRoutesCommand extends Command
             ])
             ->addOption('plugin', [
                 'help' => 'Specify a plugin',
+            ])
+            ->addOption('namespace', [
+                'help' => 'A base namespace (e.g. App\Controller or App\Api\Controller)',
+            ])
+            ->addOption('prefix', [
+                'help' => 'Route prefix (e.g. /api)',
             ]);
 
         if (defined('TEST_APP')) {
@@ -60,11 +67,16 @@ class CreateRoutesCommand extends Command
         if ($args->getOption('plugin')) {
             $namespace = $args->getOption('plugin');
             $plugins = Configure::read('App.paths.plugins');
+            $prefix = Inflector::dasherize($namespace);
             $configDir = reset($plugins) . DS . $args->getOption('plugin');
         } else {
             $namespace = Configure::read('App.namespace');
+            $prefix = '/';
             $configDir = CONFIG;
         }
+
+        $namespace = $args->getOption('namespace') ?? $namespace . '\Controller';
+        $prefix = $args->getOption('prefix') ?? $prefix;
 
         $controllers = $plugin ?? ControllerUtility::getControllersFqn($namespace);
 
@@ -73,29 +85,36 @@ class CreateRoutesCommand extends Command
             $this->abort();
         }
 
-        $decoratedControllers = ControllerUtility::getReflectedControllerDecorators($controllers, $namespace);
+        $decoratedControllers = ControllerUtility::getReflectedControllerDecorators($controllers);
 
-        $routes = [];
+        $routeDecorators = [];
+
+        $factory = new RouteDecoratorFactory($namespace, $prefix, $args->getOption('plugin'));
+        foreach ($decoratedControllers as $decorator) {
+            $routeDecorators = array_merge(
+                $routeDecorators,
+                $factory->createFromReflectedControllerDecorator($decorator)
+            );
+        }
 
         if ($args->getOption('display') === null) {
-            if (strtoupper($io->ask('Overwrite existing routes in `' . $configDir . '`?', 'Y')) !== 'Y') {
-                $this->abort();
-            }
 
             $file = $args->getOption('routesFile') ?? 'routes.php';
 
-            (new RouteWriter($decoratedControllers, $configDir))->overwrite($file);
+            $ask = $io->ask('This will modify`' . $configDir . $file . '`, continue?', 'Y');
+            if (strtoupper($ask) !== 'Y') {
+                $this->abort();
+            }
+
+
+
+            (new RouteWriter($routeDecorators, $configDir, $prefix))->merge($file);
             $io->success('> Routes were written to ' . $configDir . $file);
             $io->out();
 
             return;
-        } else {
-            $factory = new RouteDecoratorFactory((string)$args->getOption('plugin'));
-            foreach ($decoratedControllers as $decorator) {
-                $routes = array_merge($routes, $factory->createFromReflectedControllerDecorator($decorator));
-            }
         }
 
-        (new RouteTable($io, $routes))->output();
+        (new RouteTable($io, $routeDecorators))->output();
     }
 }

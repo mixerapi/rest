@@ -18,14 +18,12 @@ class Application extends BaseApplication
 
     public function bootstrap(): void
     {
-        $this->addPlugin('Bake');
         $this->addPlugin('MixerApi/Rest');
 
     }
 
     public function console(CommandCollection $commands): CommandCollection
     {
-        $commands->add('bake', EntryCommand::class);
         return $commands;
     }
 

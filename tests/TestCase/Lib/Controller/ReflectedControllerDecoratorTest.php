@@ -11,15 +11,13 @@ class ReflectedControllerDecoratorTest extends TestCase
     public function testConstruct()
     {
         $decorator = new ReflectedControllerDecorator(
-            'MixerApi\Rest\Test\App\Controller\ActorsController',
-            'MixerApi\Rest\Test\App'
+            'MixerApi\Rest\Test\App\Controller\ActorsController'
         );
 
         $this->assertInstanceOf(ReflectedControllerDecorator::class, $decorator);
 
         $decorator = new ReflectedControllerDecorator(
-            new \ReflectionClass('MixerApi\Rest\Test\App\Controller\ActorsController'),
-            'MixerApi\Rest\Test\App'
+            new \ReflectionClass('MixerApi\Rest\Test\App\Controller\ActorsController')
         );
 
         $this->assertInstanceOf(ReflectedControllerDecorator::class, $decorator);
@@ -29,7 +27,6 @@ class ReflectedControllerDecoratorTest extends TestCase
     {
         $this->expectException(RunTimeException::class);
         $decorator = new ReflectedControllerDecorator(
-            'MixerApi\Rest\Test\Nope',
             'MixerApi\Rest\Test\Nope'
         );
     }

@@ -12,47 +12,50 @@ class RouteDecoratorFactory
     /**
      * @var string
      */
+    private $baseNamespace;
+
+    /**
+     * @var string
+     */
     private $plugin;
 
     /**
-     * @param string $plugin Plugin name
+     * @param string $baseNamespace a base namespace (e.g. App\Controller)
+     * @param string $prefix a path prefix (e.g. '/' or 'api')
+     * @param string|null $plugin Plugin name
      */
-    public function __construct(string $plugin = '')
+    public function __construct(string $baseNamespace, string $prefix, ?string $plugin = null)
     {
-        $this->plugin = trim($plugin);
+        $this->baseNamespace = $baseNamespace;
+        $this->prefix = $prefix;
+        $this->plugin = $plugin;
     }
 
     /**
      * Creates a RouteDecorator instance from a ReflectedControllerDecorator instance
      *
-     * @param \MixerApi\Rest\Lib\Controller\ReflectedControllerDecorator $decorator ReflectedControllerDecorator
+     * @param \MixerApi\Rest\Lib\Controller\ReflectedControllerDecorator $controller ReflectedControllerDecorator
      * @return \MixerApi\Rest\Lib\Route\RouteDecorator[]
      */
-    public function createFromReflectedControllerDecorator(ReflectedControllerDecorator $decorator): array
+    public function createFromReflectedControllerDecorator(ReflectedControllerDecorator $controller): array
     {
         $routeDecorators = [];
 
-        $controller = $decorator->getResourceName();
-
-        $template = '';
-
-        if (!empty($this->plugin)) {
-            $template = Text::slug($this->plugin);
+        if (!$controller->hasCrud()) {
+            return $routeDecorators;
         }
 
-        $template .= Text::slug(strtolower($controller));
-
-        foreach ($decorator->getMethods() as $action) {
-            $uriTemplate = $template;
-
-            if (in_array($action->getName(), ['add','view','update','delete'])) {
-                $uriTemplate .= '/:id';
-            }
-
+        foreach ($controller->getMethods() as $action) {
             try {
-                $routeDecorators[] = new RouteDecorator(
-                    RouteFactory::create(trim($uriTemplate), $controller, $action->getName(), $this->plugin)
+                $route = RouteFactory::create(
+                    $this->baseNamespace,
+                    $this->prefix,
+                    $controller,
+                    $action->getName(),
+                    $this->plugin
                 );
+
+                $routeDecorators[] = new RouteDecorator($route);
             } catch (RestfulRouteException $e) {
             }
         }

@@ -4,6 +4,10 @@ declare(strict_types=1);
 namespace MixerApi\Rest\Lib\Route;
 
 use MixerApi\Rest\Lib\Exception\RunTimeException;
+use PhpParser\ParserFactory;
+use PhpParser\NodeTraverser;
+use MixerApi\Rest\Lib\Parser\RouteScopeVisitor;
+use PhpParser\PrettyPrinter\Standard;
 
 /**
  * Class RouteWriter
@@ -15,9 +19,9 @@ use MixerApi\Rest\Lib\Exception\RunTimeException;
 class RouteWriter
 {
     /**
-     * @var \MixerApi\Rest\Lib\Controller\ReflectedControllerDecorator[]
+     * @var \MixerApi\Rest\Lib\Route\RouteDecorator[]
      */
-    private $decorators;
+    private $routeDecorators;
 
     /**
      * @var string
@@ -25,26 +29,32 @@ class RouteWriter
     private $configDir;
 
     /**
-     * @param \MixerApi\Rest\Lib\Controller\ReflectedControllerDecorator[] $decorators Array of Decorator instances
-     * @param string $configDir An absolute directory path to userland CakePHP config
+     * @var string
      */
-    public function __construct(array $decorators, string $configDir)
+    private $prefix;
+
+    /**
+     * @param \MixerApi\Rest\Lib\Route\RouteDecorator[] $routeDecorators Array of Decorator instances
+     * @param string $configDir An absolute directory path to userland CakePHP config
+     * @param string $prefix route prefix (e.g `/`)
+     */
+    public function __construct(array $routeDecorators, string $configDir, string $prefix)
     {
         if (!is_dir($configDir)) {
             throw new RunTimeException("Directory does not exist `$configDir`");
         }
 
-        $this->decorators = $decorators;
+        $this->routeDecorators = $routeDecorators;
         $this->configDir = $configDir;
+        $this->prefix = $prefix;
     }
 
     /**
-     * Overwrites userland `routes.php` file
+     * Merges routes into an existing scope in routes.php
      *
-     * @param string $file Filename, defaults to routes.php
-     * @return void
+     * @param string $file
      */
-    public function overwrite(string $file = 'routes.php'): void
+    public function merge(string $file = 'routes.php'): void
     {
         $routesFile = $this->configDir . $file;
 
@@ -56,35 +66,43 @@ class RouteWriter
             throw new RunTimeException('Routes file is not writable `' . $routesFile . '`');
         }
 
-        if (!copy($this->getTemplateFilePath(), $routesFile)) {
-            throw new RunTimeException('Error copying routes to `' . $routesFile . '`');
+        $contents = file_get_contents($routesFile);
+        $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
+        try {
+            $ast = $parser->parse($contents);
+        } catch (Error $error) {
+            echo "Parse error: {$error->getMessage()}\n";
+            return;
         }
 
-        $fileResource = fopen($routesFile, 'a');
+        $traverser = new NodeTraverser();
+        $traverser->addVisitor(new RouteScopeVisitor($this->getResources(), $this->prefix));
 
-        fwrite($fileResource, $this->getRoutesPhpCode());
-        fclose($fileResource);
+        $ast = $traverser->traverse($ast);
+        $prettyPrinter = new Standard;
+        $newCode = $prettyPrinter->prettyPrintFile($ast);
+
+        file_put_contents($routesFile, $newCode);
     }
 
     /**
-     * Gets the route as a string of PHP code
-     *
-     * @return string
+     * @return RouteDecorator[]
      */
-    private function getRoutesPhpCode(): string
+    private function getResources(): array
     {
-        $routes = '';
-        $routes .= "\$routes->scope('/', function (RouteBuilder \$builder) {\r";
-        $routes .= "\t\$builder->fallbacks();\r";
-        $routes .= "\t\$builder->setExtensions(['json']);\r";
+        $resources = [];
 
-        foreach ($this->decorators as $decorator) {
-            $routes .= sprintf("\t\$builder->resources('%s');\r", $decorator->getResourceName());
+        foreach ($this->routeDecorators as $decorator) {
+            if (isset($routes[$decorator->getController()])) {
+                continue;
+            }
+
+            $decorator->setTemplate(str_replace('/:id', '', $decorator->getTemplate()));
+
+            $resources[$decorator->getController()] = $decorator;
         }
 
-        $routes .= "});\r";
-
-        return $routes;
+        return array_values($resources);
     }
 
     /**
