@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace MixerApi\Rest\Lib\Route;
 
 use MixerApi\Rest\Lib\Exception\RunTimeException;
-use PhpParser\ParserFactory;
-use PhpParser\NodeTraverser;
 use MixerApi\Rest\Lib\Parser\RouteScopeVisitor;
+use PhpParser\NodeTraverser;
+use PhpParser\ParserFactory;
 use PhpParser\PrettyPrinter\Standard;
 
 /**
@@ -52,7 +52,8 @@ class RouteWriter
     /**
      * Merges routes into an existing scope in routes.php
      *
-     * @param string $file
+     * @param string $file the routes.php file (mainly used for unit testing)
+     * @return void
      */
     public function merge(string $file = 'routes.php'): void
     {
@@ -67,26 +68,27 @@ class RouteWriter
         }
 
         $contents = file_get_contents($routesFile);
-        $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
+        $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
         try {
             $ast = $parser->parse($contents);
         } catch (Error $error) {
             echo "Parse error: {$error->getMessage()}\n";
+
             return;
         }
 
         $traverser = new NodeTraverser();
-        $traverser->addVisitor(new RouteScopeVisitor($this->getResources(), $this->prefix));
+        $traverser->addVisitor(new RouteScopeVisitor($this->getResources()));
 
         $ast = $traverser->traverse($ast);
-        $prettyPrinter = new Standard;
+        $prettyPrinter = new Standard();
         $newCode = $prettyPrinter->prettyPrintFile($ast);
 
         file_put_contents($routesFile, $newCode);
     }
 
     /**
-     * @return RouteDecorator[]
+     * @return \MixerApi\Rest\Lib\Route\RouteDecorator[]
      */
     private function getResources(): array
     {
@@ -103,13 +105,5 @@ class RouteWriter
         }
 
         return array_values($resources);
-    }
-
-    /**
-     * @return string
-     */
-    private function getTemplateFilePath(): string
-    {
-        return __DIR__ . DS . '..' . DS . 'assets' . DS . 'routes.php';
     }
 }

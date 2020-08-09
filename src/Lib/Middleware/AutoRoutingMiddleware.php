@@ -3,16 +3,10 @@ declare(strict_types=1);
 
 namespace MixerApi\Rest\Lib\Middleware;
 
-use Cake\Cache\Cache;
-use Cake\Core\Configure;
-use Cake\Routing\Route\Route;
-use Cake\Routing\Router;
 use Cake\Routing\RouteBuilder;
+use Cake\Routing\Router;
 use Cake\Utility\Inflector;
-use Cake\Utility\Text;
 use MixerApi\Rest\Lib\Controller\ControllerUtility;
-use MixerApi\Rest\Lib\Controller\ReflectedControllerDecorator;
-use MixerApi\Rest\Lib\Controller\ResourceInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -31,13 +25,12 @@ class AutoRoutingMiddleware implements MiddlewareInterface
     private $prefix;
 
     /**
-     * @param array $options
+     * @param array $options options for middleware
      */
     public function __construct(array $options = [])
     {
-        $options = array_merge(['namespace' => 'App\Controller', 'prefix' => '/'], $options);
-        $this->namespace =  $options['namespace'];
-        $this->prefix =  $options['prefix'];
+        $this->namespace = $options['namespace'] ?? 'App\Controller';
+        $this->prefix = $options['prefix'] ?? '/';
     }
 
     /**
@@ -73,16 +66,16 @@ class AutoRoutingMiddleware implements MiddlewareInterface
                 continue;
             }
 
-            $paths = array_map( function($path) {
+            $paths = array_map(function ($path) {
                 return Inflector::dasherize($path);
             }, $nsPaths);
 
             $path = implode('/', $paths) . '/' . Inflector::dasherize($controller->getResourceName());
             $prefix = implode('/', $nsPaths);
 
-            $builder->resources($controller->getResourceName(),[
+            $builder->resources($controller->getResourceName(), [
                 'path' => $path,
-                'prefix' => $prefix
+                'prefix' => $prefix,
             ]);
         }
 

@@ -3,38 +3,34 @@ declare(strict_types=1);
 
 namespace MixerApi\Rest\Lib\Parser;
 
-use MixerApi\Rest\Lib\Route\RouteDecorator;
-use PhpParser\NodeVisitorAbstract;
 use PhpParser\Node;
-use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Expr\Closure;
-use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
+use PhpParser\Node\Expr\Closure;
+use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\NodeVisitorAbstract;
 
 class RouteScopeVisitor extends NodeVisitorAbstract
 {
     /**
-     * @var RouteDecorator[]
+     * @var \MixerApi\Rest\Lib\Route\RouteDecorator[]
      */
     private $resources;
 
     /**
-     * @var string
+     * @param \MixerApi\Rest\Lib\Route\RouteDecorator[] $resources array of RouteDecorators
      */
-    private $prefix;
-
-    /**
-     * @param RouteDecorator[] $resources
-     * @param string $prefix
-     */
-    public function __construct(array $resources, string $prefix)
+    public function __construct(array $resources)
     {
         $this->resources = $resources;
-        $this->prefix = $prefix;
     }
 
+    /**
+     * @param \PhpParser\Node $node instance of Node
+     * @return \PhpParser\Node
+     */
     public function enterNode(Node $node): Node
     {
         if (!$node instanceof MethodCall || $node->name->name != 'scope') {
@@ -51,8 +47,8 @@ class RouteScopeVisitor extends NodeVisitorAbstract
     /**
      * Modifies the Route::scope
      *
-     * @param Node $node
-     * @return Node
+     * @param \PhpParser\Node $node instance of Node
+     * @return \PhpParser\Node
      */
     private function modify(Node $node): Node
     {
@@ -79,15 +75,16 @@ class RouteScopeVisitor extends NodeVisitorAbstract
     }
 
     /**
-     * @param Closure $closure
-     * @return Expression[]
+     * Returns an array of statements
+     *
+     * @param \PhpParser\Node\Expr\Closure $closure instance of Closure
+     * @return \PhpParser\Node\Stmt\Expression[]
      */
     private function buildResourceStmtExpressions(Closure $closure): array
     {
         $statements = [];
 
         foreach ($this->resources as $resource) {
-
             if ($this->hasResource($closure, $resource->getController())) {
                 continue;
             }
@@ -95,7 +92,6 @@ class RouteScopeVisitor extends NodeVisitorAbstract
             $arguments = [new Node\Arg(new String_($resource->getController()))];
 
             if (!empty($resource->getRoute()->defaults['prefix'])) {
-
                 $pieces = explode('/', $resource->getTemplate());
                 array_pop($pieces);
 
@@ -125,8 +121,8 @@ class RouteScopeVisitor extends NodeVisitorAbstract
     /**
      * Check if the route resource already exists
      *
-     * @param Closure $closure
-     * @param string $argument
+     * @param \PhpParser\Node\Expr\Closure $closure instance of Closure
+     * @param string $argument the resource name (such as Actors for ActorsController)
      * @return bool
      */
     private function hasResource(Closure $closure, string $argument): bool
@@ -139,10 +135,11 @@ class RouteScopeVisitor extends NodeVisitorAbstract
                 continue;
             }
 
-            $results = array_filter($stmt->expr->args, function($arg) use ($argument)  {
+            $results = array_filter($stmt->expr->args, function ($arg) use ($argument) {
                 if (!$arg->value instanceof String_) {
                     return false;
                 }
+
                 return $arg->value->value == $argument;
             });
 

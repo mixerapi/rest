@@ -34,8 +34,7 @@ class ControllerUtility
     /**
      * Gets an array of ReflectedControllerDecorators
      *
-     * @param string[] $controllers An array of controllers as fully qualified name space strings
-     * @param string $namespace Fqn
+     * @param string[] $controllers an array of controllers as fully qualified name space strings
      * @return \MixerApi\Rest\Lib\Controller\ReflectedControllerDecorator[]
      * @throws \ReflectionException
      */

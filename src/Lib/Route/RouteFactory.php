@@ -24,9 +24,9 @@ class RouteFactory
      *
      * @param string $baseNamespace a base namespace (e.g. App\Controller)
      * @param string $basePath a base path (e.g. `/`)
-     * @param ReflectedControllerDecorator $controller ReflectedControllerDecorator
-     * @param string $template URI Template
-     * @param string $action Action method
+     * @param \MixerApi\Rest\Lib\Controller\ReflectedControllerDecorator $controller ReflectedControllerDecorator
+     * @param string $action URI Template
+     * @param string $plugin Action method
      * @param string|null $plugin Plugin name
      * @return \Cake\Routing\Route\Route
      * @throws \MixerApi\Rest\Lib\Exception\RestfulRouteException
@@ -37,8 +37,7 @@ class RouteFactory
         ReflectedControllerDecorator $controller,
         string $action,
         ?string $plugin = null
-    ): Route
-    {
+    ): Route {
         if (!isset(self::ACTION_HTTP_METHODS[$action])) {
             throw new RestfulRouteException("Action `$action` is unknown. This route will not be created");
         }
@@ -55,16 +54,16 @@ class RouteFactory
         $nsPaths = $controller->getPaths($baseNamespace);
 
         if (!empty($nsPaths)) {
-            $paths = array_map( function($path) {
+            $paths = array_map(function ($path) {
                 return Inflector::dasherize($path);
             }, $nsPaths);
 
             $template = implode('/', $paths) . '/';
-            $template.= Text::slug(strtolower($controller->getResourceName()));
+            $template .= Text::slug(strtolower($controller->getResourceName()));
             $defaults['prefix'] = implode('/', $nsPaths);
         }
 
-        $template.= "/$action";
+        $template .= "/$action";
 
         if (in_array($action, ['add','view','update','delete'])) {
             $template .= '/:id';

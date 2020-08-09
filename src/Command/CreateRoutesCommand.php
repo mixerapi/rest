@@ -98,15 +98,12 @@ class CreateRoutesCommand extends Command
         }
 
         if ($args->getOption('display') === null) {
-
             $file = $args->getOption('routesFile') ?? 'routes.php';
 
             $ask = $io->ask('This will modify`' . $configDir . $file . '`, continue?', 'Y');
             if (strtoupper($ask) !== 'Y') {
                 $this->abort();
             }
-
-
 
             (new RouteWriter($routeDecorators, $configDir, $prefix))->merge($file);
             $io->success('> Routes were written to ' . $configDir . $file);
