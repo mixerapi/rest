@@ -31,15 +31,13 @@ class AutoRoutingMiddleware implements MiddlewareInterface
     private $prefix;
 
     /**
-     * Constructor
-     *
-     * @param array $config
+     * @param array $options
      */
-    public function __construct(array $config = [])
+    public function __construct(array $options = [])
     {
-        $config = array_merge(['namespace' => 'App\Controller', 'prefix' => '/'], $config);
-        $this->namespace =  $config['namespace'];
-        $this->prefix =  $config['prefix'];
+        $options = array_merge(['namespace' => 'App\Controller', 'prefix' => '/'], $options);
+        $this->namespace =  $options['namespace'];
+        $this->prefix =  $options['prefix'];
     }
 
     /**
@@ -51,6 +49,7 @@ class AutoRoutingMiddleware implements MiddlewareInterface
      * @param \Psr\Http\Message\ServerRequestInterface $request The request.
      * @param \Psr\Http\Server\RequestHandlerInterface $handler The request handler.
      * @return \Psr\Http\Message\ResponseInterface A response.
+     * @throws \ReflectionException
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {

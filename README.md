@@ -64,7 +64,7 @@ public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
 
 This will add routes for CRUD controller actions (index, add, edit, view, and delete). If your controller does not have 
 any CRUD methods, then the route will be skipped. If your controllers exist in a non-standard location, such as a 
-plugin, or your APIs prefix is not `/`, you will need to pass a configuration array:
+plugin, or your APIs prefix is not `/`, you will need to pass an $options array:
 
 ```php
 # plugin example

@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace MixerApi\Rest\Lib\Route;
 
-use Cake\Utility\Text;
 use MixerApi\Rest\Lib\Controller\ReflectedControllerDecorator;
 use MixerApi\Rest\Lib\Exception\RestfulRouteException;
 
