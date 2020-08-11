@@ -1,7 +1,6 @@
 # RestBaker specific files #
 ############################
 /tests/test_app/config/routes_test.php
-/tests/test_app/config/routes_base.php
 /coverage-reports/
 
 # CakePHP specific files #
