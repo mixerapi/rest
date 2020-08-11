@@ -23,7 +23,7 @@ class CreateRoutesCommandTest extends TestCase
         parent::setUp();
         $this->setAppNamespace('MixerApi\Rest\Test\App');
         $this->useCommandRunner();
-
+        touch(CONFIG . self::ROUTE_FILE);
     }
 
     public function testSuccess()
