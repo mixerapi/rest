@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace MixerApi\Rest\Lib\Controller;
 
+use Cake\Cache\Engine\NullEngine;
 use Cake\Core\Configure;
 use MixerApi\Rest\Lib\Exception\InvalidControllerException;
 use Mouf\Composer\ClassNameMapper;
-use Symfony\Component\Cache\Simple\NullCache;
 use TheCodingMachine\ClassExplorer\Glob\GlobClassExplorer;
 
 /**
@@ -31,7 +31,7 @@ class ControllerUtility
         $namespace = $namespace ?? Configure::read('App.namespace') . '\Controller';
 
         $classNameMapper = ClassNameMapper::createFromComposerFile(null, null, true);
-        $explorer = new GlobClassExplorer($namespace, new NullCache(), 0, $classNameMapper);
+        $explorer = new GlobClassExplorer($namespace, new NullEngine(), 0, $classNameMapper);
 
         return array_keys($explorer->getClassMap());
     }
