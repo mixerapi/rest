@@ -8,7 +8,6 @@ use MixerApi\Rest\Lib\Parser\RouteScopeVisitor;
 use PhpParser\NodeTraverser;
 use PhpParser\ParserFactory;
 use PhpParser\PrettyPrinter\Standard;
-use Cake\Utility\Text;
 
 /**
  * Class RouteWriter
@@ -20,7 +19,7 @@ use Cake\Utility\Text;
 class RouteWriter
 {
     /**
-     * @var MixerApi\Rest\Lib\Controller\ReflectedControllerDecorator[]
+     * @var \MixerApi\Rest\Lib\Controller\ReflectedControllerDecorator[]
      */
     private $resources;
 
@@ -40,7 +39,7 @@ class RouteWriter
     private $prefix;
 
     /**
-     * @param \MixerApi\Rest\Lib\Controller\ReflectedControllerDecorator[] $controllers ReflectedControllerDecorator[]
+     * @param \MixerApi\Rest\Lib\Controller\ReflectedControllerDecorator[] $resources ReflectedControllerDecorator[]
      * @param string $baseNamespace a base namespace
      * @param string $configDir an absolute directory path to userland CakePHP config
      * @param string $prefix route prefix (e.g `/`)

@@ -25,8 +25,7 @@ class RouteFactory
      * @param string $baseNamespace a base namespace (e.g. App\Controller)
      * @param string $basePath a base path (e.g. `/`)
      * @param \MixerApi\Rest\Lib\Controller\ReflectedControllerDecorator $controller ReflectedControllerDecorator
-     * @param string $action URI Template
-     * @param string $plugin Action method
+     * @param string $action Action method
      * @param string|null $plugin Plugin name
      * @return \Cake\Routing\Route\Route
      * @throws \MixerApi\Rest\Lib\Exception\RestfulRouteException
@@ -41,6 +40,8 @@ class RouteFactory
         if (!isset(self::ACTION_HTTP_METHODS[$action])) {
             throw new RestfulRouteException("Action `$action` is unknown. This route will not be created");
         }
+
+        $basePath = $basePath . '@todo'; // @todo
 
         $template = Text::slug(strtolower($controller->getResourceName()));
 

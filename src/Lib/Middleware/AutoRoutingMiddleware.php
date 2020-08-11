@@ -6,7 +6,6 @@ namespace MixerApi\Rest\Lib\Middleware;
 use Cake\Core\Configure;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
-use Cake\Utility\Inflector;
 use MixerApi\Rest\Lib\Route\ResourceScanner;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;

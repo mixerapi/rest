@@ -16,6 +16,11 @@ class RouteDecoratorFactory
     /**
      * @var string
      */
+    private $prefix;
+
+    /**
+     * @var string
+     */
     private $plugin;
 
     /**

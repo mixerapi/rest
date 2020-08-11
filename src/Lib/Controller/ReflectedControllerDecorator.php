@@ -86,13 +86,13 @@ class ReflectedControllerDecorator
      * Gets a template path from namespace, for example given App\Controller for a controller located at
      * App\Controller\SubResource\ActorsController, the output would be: `sub-resource/actors`
      *
-     * @param string $baseNamespace
+     * @param string $baseNamespace a base name space (e.g. App or App\Controller\Sub)
      * @return string
      */
     public function getPathTemplate(string $baseNamespace): string
     {
         $paths = array_map(
-            function($item) {
+            function ($item) {
                 return Text::slug(strtolower($item));
             },
             $this->getPaths($baseNamespace)

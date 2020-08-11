@@ -104,7 +104,7 @@ class RouteScopeVisitor extends NodeVisitorAbstract
                         new String_(end($prefixes)),
                         new String_('prefix')
                     ),
-                ],['kind' => Array_::KIND_SHORT]));
+                ], ['kind' => Array_::KIND_SHORT]));
             }
 
             $methodCall = new MethodCall(

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace MixerApi\Rest\Lib\Route;
 
@@ -8,16 +9,16 @@ use MixerApi\Rest\Lib\Controller\ControllerUtility;
 class ResourceScanner
 {
     /**
-     * @var string|null $namespace
+     * @var string|null $baseNamespace
      */
-    private $namespace;
+    private $baseNamespace;
 
     /**
-     * @param string|null $namespace
+     * @param string|null $baseNamespace a base name space (e.g. App or App\Controller\Sub)
      */
-    public function __construct(?string $namespace = null)
+    public function __construct(?string $baseNamespace = null)
     {
-        $this->namespace = $namespace ?? Configure::read('App.namespace') . '\Controller';
+        $this->baseNamespace = $baseNamespace ?? Configure::read('App.namespace') . '\Controller';
     }
 
     /**
@@ -28,10 +29,10 @@ class ResourceScanner
      */
     public function getControllerDecorators(): array
     {
-        $controllers = ControllerUtility::getControllersFqn($this->namespace);
+        $controllers = ControllerUtility::getControllersFqn($this->baseNamespace);
         $controllerDecorators = ControllerUtility::getReflectedControllerDecorators($controllers);
 
-        return array_values(array_filter($controllerDecorators, function($controller) {
+        return array_values(array_filter($controllerDecorators, function ($controller) {
             return $controller->hasCrud();
         }));
     }

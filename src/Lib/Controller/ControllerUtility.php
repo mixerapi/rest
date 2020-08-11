@@ -5,9 +5,9 @@ namespace MixerApi\Rest\Lib\Controller;
 
 use Cake\Core\Configure;
 use MixerApi\Rest\Lib\Exception\InvalidControllerException;
-use TheCodingMachine\ClassExplorer\Glob\GlobClassExplorer;
-use Symfony\Component\Cache\Simple\NullCache;
 use Mouf\Composer\ClassNameMapper;
+use Symfony\Component\Cache\Simple\NullCache;
+use TheCodingMachine\ClassExplorer\Glob\GlobClassExplorer;
 
 /**
  * Class ControllerUtility
@@ -30,8 +30,9 @@ class ControllerUtility
     {
         $namespace = $namespace ?? Configure::read('App.namespace') . '\Controller';
 
-        $classNameMapper = ClassNameMapper::createFromComposerFile(null,null,true);
+        $classNameMapper = ClassNameMapper::createFromComposerFile(null, null, true);
         $explorer = new GlobClassExplorer($namespace, new NullCache(), 0, $classNameMapper);
+
         return array_keys($explorer->getClassMap());
     }
 
