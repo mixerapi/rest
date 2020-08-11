@@ -8,6 +8,7 @@ use MixerApi\Rest\Lib\Parser\RouteScopeVisitor;
 use PhpParser\NodeTraverser;
 use PhpParser\ParserFactory;
 use PhpParser\PrettyPrinter\Standard;
+use Cake\Utility\Text;
 
 /**
  * Class RouteWriter
@@ -19,9 +20,14 @@ use PhpParser\PrettyPrinter\Standard;
 class RouteWriter
 {
     /**
-     * @var \MixerApi\Rest\Lib\Route\RouteDecorator[]
+     * @var MixerApi\Rest\Lib\Controller\ReflectedControllerDecorator[]
      */
-    private $routeDecorators;
+    private $resources;
+
+    /**
+     * @var string
+     */
+    private $baseNamespace;
 
     /**
      * @var string
@@ -34,19 +40,21 @@ class RouteWriter
     private $prefix;
 
     /**
-     * @param \MixerApi\Rest\Lib\Route\RouteDecorator[] $routeDecorators Array of Decorator instances
-     * @param string $configDir An absolute directory path to userland CakePHP config
+     * @param \MixerApi\Rest\Lib\Controller\ReflectedControllerDecorator[] $controllers ReflectedControllerDecorator[]
+     * @param string $baseNamespace a base namespace
+     * @param string $configDir an absolute directory path to userland CakePHP config
      * @param string $prefix route prefix (e.g `/`)
      */
-    public function __construct(array $routeDecorators, string $configDir, string $prefix)
+    public function __construct(array $resources, string $baseNamespace, string $configDir, string $prefix)
     {
         if (!is_dir($configDir)) {
             throw new RunTimeException("Directory does not exist `$configDir`");
         }
 
-        $this->routeDecorators = $routeDecorators;
+        $this->resources = $resources;
+        $this->baseNamespace = $baseNamespace;
         $this->configDir = $configDir;
-        $this->prefix = $prefix;
+        $this->prefix = $prefix; // @todo needed for future scope implementation
     }
 
     /**
@@ -69,41 +77,46 @@ class RouteWriter
 
         $contents = file_get_contents($routesFile);
         $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
-        try {
-            $ast = $parser->parse($contents);
-        } catch (Error $error) {
-            echo "Parse error: {$error->getMessage()}\n";
-
-            return;
-        }
+        $ast = $parser->parse($contents);
 
         $traverser = new NodeTraverser();
-        $traverser->addVisitor(new RouteScopeVisitor($this->getResources()));
+        $traverser->addVisitor(new RouteScopeVisitor($this));
 
         $ast = $traverser->traverse($ast);
-        $prettyPrinter = new Standard();
-        $newCode = $prettyPrinter->prettyPrintFile($ast);
+        $code = (new Standard())->prettyPrintFile($ast);
 
-        file_put_contents($routesFile, $newCode);
+        file_put_contents($routesFile, $code);
     }
 
     /**
-     * @return \MixerApi\Rest\Lib\Route\RouteDecorator[]
+     * @return \MixerApi\Rest\Lib\Controller\ReflectedControllerDecorator[]
      */
-    private function getResources(): array
+    public function getResources(): array
     {
-        $resources = [];
+        return $this->resources;
+    }
 
-        foreach ($this->routeDecorators as $decorator) {
-            if (isset($routes[$decorator->getController()])) {
-                continue;
-            }
+    /**
+     * @return string
+     */
+    public function getBaseNamespace(): string
+    {
+        return $this->baseNamespace;
+    }
 
-            $decorator->setTemplate(str_replace('/:id', '', $decorator->getTemplate()));
+    /**
+     * @return string
+     */
+    public function getConfigDir(): string
+    {
+        return $this->configDir;
+    }
 
-            $resources[$decorator->getController()] = $decorator;
-        }
-
-        return array_values($resources);
+    /**
+     * @return string
+     */
+    public function getPrefix(): string
+    {
+        return $this->prefix;
     }
 }

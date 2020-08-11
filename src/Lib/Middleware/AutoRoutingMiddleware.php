@@ -3,10 +3,11 @@ declare(strict_types=1);
 
 namespace MixerApi\Rest\Lib\Middleware;
 
+use Cake\Core\Configure;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\Router;
 use Cake\Utility\Inflector;
-use MixerApi\Rest\Lib\Controller\ControllerUtility;
+use MixerApi\Rest\Lib\Route\ResourceScanner;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -29,7 +30,7 @@ class AutoRoutingMiddleware implements MiddlewareInterface
      */
     public function __construct(array $options = [])
     {
-        $this->namespace = $options['namespace'] ?? 'App\Controller';
+        $this->namespace = $options['namespace'] ?? Configure::read('App.namespace') . '\Controller';
         $this->prefix = $options['prefix'] ?? '/';
     }
 
@@ -49,33 +50,23 @@ class AutoRoutingMiddleware implements MiddlewareInterface
         $collection = Router::getRouteCollection();
 
         $builder = new RouteBuilder($collection, $this->prefix);
-        $controllers = ControllerUtility::getControllersFqn($this->namespace);
-        sort($controllers);
+        $resources = (new ResourceScanner($this->namespace))->getControllerDecorators();
 
-        $controllerDecorators = ControllerUtility::getReflectedControllerDecorators($controllers);
-
-        foreach ($controllerDecorators as $controller) {
-            if (!$controller->hasCrud()) {
+        foreach ($resources as $resource) {
+            if (!$resource->hasCrud()) {
                 continue;
             }
 
-            $nsPaths = $controller->getPaths($this->namespace);
+            $paths = $resource->getPaths($this->namespace);
 
-            if (empty($nsPaths)) {
-                $builder->resources($controller->getResourceName());
+            if (empty($paths)) {
+                $builder->resources($resource->getResourceName());
                 continue;
             }
 
-            $paths = array_map(function ($path) {
-                return Inflector::dasherize($path);
-            }, $nsPaths);
-
-            $path = implode('/', $paths) . '/' . Inflector::dasherize($controller->getResourceName());
-            $prefix = implode('/', $nsPaths);
-
-            $builder->resources($controller->getResourceName(), [
-                'path' => $path,
-                'prefix' => $prefix,
+            $builder->resources($resource->getResourceName(), [
+                'path' => $resource->getPathTemplate($this->namespace),
+                'prefix' => end($paths),
             ]);
         }
 

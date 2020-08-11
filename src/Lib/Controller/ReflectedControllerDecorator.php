@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace MixerApi\Rest\Lib\Controller;
 
 use Cake\Controller\Controller;
+use Cake\Utility\Text;
 use MixerApi\Rest\Lib\Exception\InvalidControllerException;
 use MixerApi\Rest\Lib\Exception\RunTimeException;
 use ReflectionClass;
@@ -47,7 +48,7 @@ class ReflectedControllerDecorator
         if (!$this->reflectedController->isSubclassOf(Controller::class)) {
             throw new InvalidControllerException(
                 sprintf(
-                    'Controller `%s` must be a subclass of AppController',
+                    'Controller `%s` must be a subclass of Controller',
                     $this->getReflectedController()->getShortName()
                 )
             );
@@ -55,7 +56,8 @@ class ReflectedControllerDecorator
     }
 
     /**
-     * Returns an array of namespaces for the controller, relative to the $baseNamespace argument.
+     * Returns an array of namespaces for the controller, for example given App\Controller for a controller located at
+     * App\Controller\SubResource\ActorsController, the output would be: ['SubResource']
      *
      * @param string $baseNamespace the base namespace (e.g. App\Controller)
      * @return array
@@ -78,6 +80,25 @@ class ReflectedControllerDecorator
         }
 
         return $paths;
+    }
+
+    /**
+     * Gets a template path from namespace, for example given App\Controller for a controller located at
+     * App\Controller\SubResource\ActorsController, the output would be: `sub-resource/actors`
+     *
+     * @param string $baseNamespace
+     * @return string
+     */
+    public function getPathTemplate(string $baseNamespace): string
+    {
+        $paths = array_map(
+            function($item) {
+                return Text::slug(strtolower($item));
+            },
+            $this->getPaths($baseNamespace)
+        );
+
+        return implode('/', $paths) . '/' . Text::slug(strtolower($this->getResourceName()));
     }
 
     /**

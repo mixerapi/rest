@@ -45,7 +45,7 @@ if you are just getting started with building APIs in CakePHP.
 
 In your Application class simply add `\MixerApi\Rest\Lib\Middleware\AutoRoutingMiddleware` after `RoutingMiddleware`:
 
-> Note: AutoRoutingMiddleware is **not advised** for production APIs due to performance reasons.
+> Note: There is a minor performance penalty with AutoRoutingMiddleware so use `routes.php` in production.
 
 ```php
 # src/Application.php

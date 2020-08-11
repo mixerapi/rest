@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace MixerApi\Rest\Lib\Parser;
 
+use MixerApi\Rest\Lib\Route\RouteWriter;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
@@ -15,16 +16,16 @@ use PhpParser\NodeVisitorAbstract;
 class RouteScopeVisitor extends NodeVisitorAbstract
 {
     /**
-     * @var \MixerApi\Rest\Lib\Route\RouteDecorator[]
+     * @var \MixerApi\Rest\Lib\Route\RouteWriter
      */
-    private $resources;
+    private $routeWriter;
 
     /**
-     * @param \MixerApi\Rest\Lib\Route\RouteDecorator[] $resources array of RouteDecorators
+     * @param \MixerApi\Rest\Lib\Route\RouteWriter $routeWriter instance of RouteWriter
      */
-    public function __construct(array $resources)
+    public function __construct(RouteWriter $routeWriter)
     {
-        $this->resources = $resources;
+        $this->routeWriter = $routeWriter;
     }
 
     /**
@@ -84,27 +85,26 @@ class RouteScopeVisitor extends NodeVisitorAbstract
     {
         $statements = [];
 
-        foreach ($this->resources as $resource) {
-            if ($this->hasResource($closure, $resource->getController())) {
+        foreach ($this->routeWriter->getResources() as $resource) {
+            if ($this->hasResource($closure, $resource->getResourceName())) {
                 continue;
             }
 
-            $arguments = [new Node\Arg(new String_($resource->getController()))];
+            $arguments = [new Node\Arg(new String_($resource->getResourceName()))];
+            $prefixes = $resource->getPaths($this->routeWriter->getBaseNamespace());
 
-            if (!empty($resource->getRoute()->defaults['prefix'])) {
-                $pieces = explode('/', $resource->getTemplate());
-                array_pop($pieces);
-
+            if (!empty($prefixes)) {
+                $pathTemplate = $resource->getPathTemplate($this->routeWriter->getBaseNamespace());
                 $arguments[] = new Node\Arg(new Array_([
                     new ArrayItem(
-                        new String_(implode('/', $pieces)),
+                        new String_($pathTemplate),
                         new String_('path')
                     ),
                     new ArrayItem(
-                        new String_($resource->getRoute()->defaults['prefix']),
+                        new String_(end($prefixes)),
                         new String_('prefix')
                     ),
-                ]));
+                ],['kind' => Array_::KIND_SHORT]));
             }
 
             $methodCall = new MethodCall(

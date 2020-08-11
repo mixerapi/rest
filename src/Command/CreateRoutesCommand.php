@@ -10,6 +10,7 @@ use Cake\Console\ConsoleOptionParser;
 use Cake\Core\Configure;
 use Cake\Utility\Inflector;
 use MixerApi\Rest\Lib\Controller\ControllerUtility;
+use MixerApi\Rest\Lib\Route\ResourceScanner;
 use MixerApi\Rest\Lib\Route\RouteDecoratorFactory;
 use MixerApi\Rest\Lib\Route\RouteWriter;
 
@@ -78,12 +79,29 @@ class CreateRoutesCommand extends Command
         $namespace = $args->getOption('namespace') ?? $namespace . '\Controller';
         $prefix = $args->getOption('prefix') ?? $prefix;
 
-        $controllers = $plugin ?? ControllerUtility::getControllersFqn($namespace);
+        $controllers = (new ResourceScanner($namespace))->getControllerDecorators();
 
         if (empty($controllers)) {
             $io->warning("> No controllers were found in namespace `$namespace`");
             $this->abort();
         }
+
+        if ($args->getOption('display') === null) {
+            $file = $args->getOption('routesFile') ?? 'routes.php';
+
+            $ask = $io->ask('This will modify`' . $configDir . $file . '`, continue?', 'Y');
+            if (strtoupper($ask) !== 'Y') {
+                $this->abort();
+            }
+
+            (new RouteWriter($controllers, $namespace, $configDir, $prefix))->merge($file);
+            $io->success('> Routes were written to ' . $configDir . $file);
+            $io->out();
+
+            return;
+        }
+
+        $controllers = $plugin ?? ControllerUtility::getControllersFqn($namespace);
 
         $decoratedControllers = ControllerUtility::getReflectedControllerDecorators($controllers);
 
@@ -95,21 +113,6 @@ class CreateRoutesCommand extends Command
                 $routeDecorators,
                 $factory->createFromReflectedControllerDecorator($decorator)
             );
-        }
-
-        if ($args->getOption('display') === null) {
-            $file = $args->getOption('routesFile') ?? 'routes.php';
-
-            $ask = $io->ask('This will modify`' . $configDir . $file . '`, continue?', 'Y');
-            if (strtoupper($ask) !== 'Y') {
-                $this->abort();
-            }
-
-            (new RouteWriter($routeDecorators, $configDir, $prefix))->merge($file);
-            $io->success('> Routes were written to ' . $configDir . $file);
-            $io->out();
-
-            return;
         }
 
         (new RouteTable($io, $routeDecorators))->output();

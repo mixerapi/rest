@@ -7,8 +7,9 @@
     "require": {
         "php": ">=7.2",
         "cakephp/cakephp": ">=4.0",
-        "haydenpierce/class-finder": "^0.4.2",
-        "nikic/php-parser": "^4.8"
+        "nikic/php-parser": "^4.8",
+        "thecodingmachine/class-explorer": "^1.1",
+        "symfony/cache": "4.1.4"
     },
     "require-dev": {
         "phpunit/phpunit": "^8.0",
