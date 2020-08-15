@@ -45,16 +45,19 @@ class ControllerUtility
      */
     public static function getReflectedControllerDecorators(array $controllers): array
     {
-        $decoratedControllers = [];
+        $return = [];
 
         foreach ($controllers as $controllerFqn) {
             try {
-                $decoratedControllers[] = new ReflectedControllerDecorator($controllerFqn);
+                $reflectedControllerDecorator = new ReflectedControllerDecorator($controllerFqn);
+                $return[$reflectedControllerDecorator->getResourceName()] = $reflectedControllerDecorator;
             } catch (InvalidControllerException $e) {
                 // maybe do something here?
             }
         }
 
-        return $decoratedControllers;
+        ksort($return);
+
+        return array_values($return);
     }
 }
