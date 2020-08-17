@@ -31,6 +31,15 @@ class ListRoutesCommandTest extends TestCase
         $this->assertOutputContains('Actors', 'controller');
     }
 
+    public function testExecutePlugin()
+    {
+        $this->exec('mixerapi:rest route list --plugin App');
+        $this->assertOutputContains('actors:index', 'route name');
+        $this->assertOutputContains('actors', 'uri template');
+        $this->assertOutputContains('GET', 'method(s)');
+        $this->assertOutputContains('Actors', 'controller');
+    }
+
     public function testExecuteRoutesNotFound()
     {
         $this->exec('mixerapi:rest route list --reloadRoutes');

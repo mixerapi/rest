@@ -2,10 +2,12 @@
 
 namespace MixerApi\Rest\Test\TestCase\Command;
 
+use Cake\Core\Configure;
 use Cake\Routing\Route\Route;
 use Cake\Routing\Router;
 use Cake\TestSuite\ConsoleIntegrationTestTrait;
 use Cake\TestSuite\TestCase;
+use MixerApi\Rest\Lib\Exception\RunTimeException;
 
 class CreateRoutesCommandTest extends TestCase
 {
@@ -23,14 +25,38 @@ class CreateRoutesCommandTest extends TestCase
         parent::setUp();
         $this->setAppNamespace('MixerApi\Rest\Test\App');
         $this->useCommandRunner();
+        $pluginConfig = TEST . 'plugins' . DS . 'MyPlugin' . DS . 'config' . DS;
         touch(CONFIG . self::ROUTE_FILE);
+        touch($pluginConfig . self::ROUTE_FILE);
+        copy(CONFIG . self::ROUTE_BASE, CONFIG . self::ROUTE_FILE);
+        copy($pluginConfig . self::ROUTE_BASE, $pluginConfig . self::ROUTE_FILE);
     }
 
     public function testSuccess()
     {
         $file = self::ROUTE_FILE;
         $this->exec("mixerapi:rest route create --routesFile $file", ['Y']);
-        $this->assertOutputContains('Routes were written to ' . CONFIG . $file);
+        $this->assertOutputContains('Routes were written');
+        $this->assertExitSuccess();
+    }
+
+    public function testPluginSuccess()
+    {
+        $file = self::ROUTE_FILE;
+        $ns = 'MixerApi\Rest\Test\MyPlugin\Controller';
+        $plugin = 'MyPlugin';
+        $this->exec("mixerapi:rest route create --routesFile $file --plugin $plugin", ['Y']);
+        $this->assertOutputContains('Routes were written');
+        $this->assertExitSuccess();
+    }
+
+    public function testDisplaySuccess()
+    {
+        $this->exec("mixerapi:rest route create --display");
+        $this->assertOutputContains('actors:index', 'route name');
+        $this->assertOutputContains('actors', 'uri template');
+        $this->assertOutputContains('GET', 'method(s)');
+        $this->assertOutputContains('Actors', 'controller');
         $this->assertExitSuccess();
     }
 
@@ -43,23 +69,9 @@ class CreateRoutesCommandTest extends TestCase
 
     public function testNoControllersExitError()
     {
+        $this->expectException(RunTimeException::class);
         $file = self::ROUTE_FILE;
         $this->exec("mixerapi:rest route create --routesFile $file --plugin Nope", ['Y']);
         $this->assertExitError();
-    }
-
-    public function testPluginSuccess()
-    {
-        $this->markTestIncomplete();
-    }
-
-    public function testDisplaySuccess()
-    {
-        $this->exec("mixerapi:rest route create --display");
-        $this->assertOutputContains('actors:index', 'route name');
-        $this->assertOutputContains('actors', 'uri template');
-        $this->assertOutputContains('GET', 'method(s)');
-        $this->assertOutputContains('Actors', 'controller');
-        $this->assertExitSuccess();
     }
 }

@@ -3,12 +3,14 @@ declare(strict_types=1);
 
 namespace MixerApi\Rest\Lib\Parser;
 
+use MixerApi\Rest\Lib\Exception\RunTimeException;
 use MixerApi\Rest\Lib\Route\RouteWriter;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\NodeVisitorAbstract;
@@ -34,12 +36,12 @@ class RouteScopeVisitor extends NodeVisitorAbstract
      */
     public function enterNode(Node $node): Node
     {
-        if (!$node instanceof MethodCall || $node->name->name != 'scope') {
-            return $node;
+        if ($this->isRouteScope($node)) {
+            return $this->scope($node);
         }
 
-        if ($node->args[0]->value instanceof String_ && $node->args[0]->value->value == '/') {
-            return $this->modify($node);
+        if ($this->isRoutePlugin($node)) {
+            return $this->plugin($node);
         }
 
         return $node;
@@ -51,14 +53,81 @@ class RouteScopeVisitor extends NodeVisitorAbstract
      * @param \PhpParser\Node $node instance of Node
      * @return \PhpParser\Node
      */
-    private function modify(Node $node): Node
+    private function scope(Node $node): Node
     {
         if (!isset($node->args)) {
             return $node;
         }
 
-        foreach ($node->args as $i => $arg) {
-            /** @var \PhpParser\Node\Arg $arg */
+        if (!isset($node->args[0]->value->value)) {
+            throw new RunTimeException('Route->scope should have a prefix');
+        }
+
+        if ($node->args[0]->value->value !== $this->routeWriter->getPrefix()) {
+            return $node;
+        }
+
+        $node->args = $this->buildRouteArgs($node->args);
+
+        return $node;
+    }
+
+    /**
+     * Modifies the Route::plugin
+     *
+     * @param \PhpParser\Node $node instance of Node
+     * @return \PhpParser\Node
+     */
+    private function plugin(Node $node): Node
+    {
+        // @phpstan-ignore-next-line
+        if (!isset($node->expr->args)) {
+            return $node;
+        }
+
+        if (!isset($node->expr->args[0]->value->value)) {
+            throw new RunTimeException('Route::plugin should have a plugin name defined');
+        }
+
+        if ($node->expr->args[0]->value->value !== $this->routeWriter->getPlugin()) {
+            return $node;
+        }
+
+        if (!isset($node->expr->args[1]->value) || !$node->expr->args[1]->value instanceof Array_) {
+            throw new RunTimeException('Route::plugin should have a prefix');
+        }
+
+        $matchingPrefixes = array_filter(
+            $node->expr->args[1]->value->items,
+            function ($value) {
+                // @phpstan-ignore-next-line
+                return $value->key->value == 'path' && $value->value->value == $this->routeWriter->getPrefix();
+            }
+        );
+
+        if (count($matchingPrefixes) !== 1) {
+            throw new RunTimeException(
+                'Route::plugin should have a single matching prefix for ' .
+                '`' . $this->routeWriter->getPrefix() . '`'
+            );
+        }
+
+        $node->expr->args = $this->buildRouteArgs($node->expr->args);
+
+        return $node;
+    }
+
+    /**
+     * Builds Node arguments array with route resources
+     *
+     * @param \PhpParser\Node\Arg[] $args node argument list
+     * @return \PhpParser\Node\Arg[]
+     */
+    private function buildRouteArgs(array $args): array
+    {
+        $return = [];
+
+        foreach ($args as $i => $arg) {
             if (!$arg->value instanceof Closure) {
                 continue;
             }
@@ -69,10 +138,10 @@ class RouteScopeVisitor extends NodeVisitorAbstract
             );
 
             $arg->value->stmts = $stmts;
-            $node->args[$i] = $arg;
+            $return[$i] = $arg;
         }
 
-        return $node;
+        return $return;
     }
 
     /**
@@ -149,5 +218,26 @@ class RouteScopeVisitor extends NodeVisitorAbstract
         }
 
         return false;
+    }
+
+    /**
+     * @param \PhpParser\Node $node instance of Node
+     * @return bool
+     */
+    private function isRouteScope(Node $node): bool
+    {
+        return $node instanceof MethodCall && $node->name->name == 'scope';
+    }
+
+    /**
+     * @param \PhpParser\Node $node instance of Node
+     * @return bool
+     */
+    private function isRoutePlugin(Node $node): bool
+    {
+        return isset($node->expr)
+            && $node->expr instanceof StaticCall
+            && isset($node->expr->name->name)
+            && $node->expr->name->name == 'plugin';
     }
 }

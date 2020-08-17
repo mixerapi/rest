@@ -24,7 +24,9 @@ class AutoRoutingMiddlewareTest extends TestCase
      */
     public function testProcess()
     {
-        $auto = new AutoRoutingMiddleware(['namespace' => 'MixerApi\Rest\Test\App\Controller', '/']);
+        $auto = new AutoRoutingMiddleware([
+            'namespace' => 'MixerApi\Rest\Test\App\Controller', 'prefix' => '/'
+        ]);
         $this->assertInstanceOf(
             ResponseInterface::class,
             $auto->process(new ServerRequest(), new TestRequestHandler())
@@ -48,7 +50,9 @@ class AutoRoutingMiddlewareTest extends TestCase
      */
     public function testProcessSubController()
     {
-        $auto = new AutoRoutingMiddleware(['namespace' => 'MixerApi\Rest\Test\App\Controller\Countries', '/']);
+        $auto = new AutoRoutingMiddleware([
+            'namespace' => 'MixerApi\Rest\Test\App\Controller\Countries', 'prefix' => '/'
+        ]);
         $this->assertInstanceOf(
             ResponseInterface::class,
             $auto->process(new ServerRequest(), new TestRequestHandler())
@@ -66,6 +70,28 @@ class AutoRoutingMiddlewareTest extends TestCase
 
     public function testProcessPlugin()
     {
-        $this->markTestIncomplete();
+        $auto = new AutoRoutingMiddleware([
+            'namespace' => 'MixerApi\Rest\Test\App\Controller', 'path' => '/admin', 'plugin' => 'Admin'
+        ]);
+
+        $this->assertInstanceOf(
+            ResponseInterface::class,
+            $auto->process(new ServerRequest(), new TestRequestHandler())
+        );
+
+        $collection = Router::getRouteCollection();
+        $reflection = new \ReflectionClass($collection);
+        $property = $reflection->getProperty('_routeTable');
+        $property->setAccessible(true);
+        $routeTable = $property->getValue($collection);
+        echo '<pre>' . __FILE__ . ':' . __LINE__;
+        print_r($routeTable);
+        echo '</pre>';
+        die();
+
+
+        $this->assertArrayHasKey('admin.actors:index', $routeTable);
+        $this->assertArrayHasKey('admin.countries:cities:index', $routeTable);
+        $this->assertArrayHasKey('admin.sub:languages:index', $routeTable);
     }
 }

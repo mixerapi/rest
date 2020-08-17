@@ -32,6 +32,10 @@ class ListRoutesCommand extends Command
             ]);
         }
 
+        $parser->addOption('plugin', [
+            'help' => 'Limit displayed routes to a specific plugin or for your main application use `App`',
+        ]);
+
         return $parser;
     }
 
@@ -64,6 +68,6 @@ class ListRoutesCommand extends Command
             $this->abort();
         }
 
-        (new RouteTable($io, $routes))->output();
+        (new RouteTable($io, $args, $routes))->output();
     }
 }

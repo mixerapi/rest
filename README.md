@@ -13,7 +13,7 @@
 This plugin gets your API project up and going quickly by creating routes for you. It can either:
 
 - Build your `routes.php` file from a single command, or
-- Automatically expose RESTful CRUD routes with a handy middleware.
+- Automatically expose RESTful CRUD routes with a handy AutoRouter.
 
 This plugin assumes you have already created models and controllers. For help with the latter check out 
 [MixerApi/Bake](https://github.com/mixerapi/bake). Check the official 
@@ -38,73 +38,57 @@ public function bootstrap(): void
 }
 ```
 
-## Auto-Routing
+## AutoRouter
 
-Creating routes is already pretty easy, but AutoRoutingMiddleware makes building CRUD routes effortless. This is great 
+Creating routes is already pretty easy, but AutoRouter makes building CRUD routes effortless. This is great 
 if you are just getting started with building APIs in CakePHP. 
 
-In your Application class simply add `\MixerApi\Rest\Lib\Middleware\AutoRoutingMiddleware` after `RoutingMiddleware`:
-
-> Note: There is a minor performance penalty with AutoRoutingMiddleware so use `routes.php` in production.
+In your `routes.php` simply add `\MixerApi\Rest\Lib\AutoRouter`:
 
 ```php
-# src/Application.php
-public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
-{
-    $middlewareQueue
-        // ... other middleware
-        ->add(new RoutingMiddleware($this))
-        ->add(new AutoRoutingMiddleware())
-        // ... other middleware
-    ;
-
-    return $middlewareQueue;
-}
+# config/routes.php
+$routes->scope('/', function (RouteBuilder $builder) {
+    // ... other routes
+    (new AutoRouter($builder))->buildResources();
+    // ... other routes
+});
 ```
 
 This will add routes for CRUD controller actions (index, add, edit, view, and delete). If your controller does not have 
-any CRUD methods, then the route will be skipped. If your controllers exist in a non-standard location, such as a 
-plugin, or your APIs prefix is not `/`, you will need to pass an $options array:
+any CRUD methods, then the route will be skipped. AutoRouting works for plugins too:
 
 ```php
-# plugin example
-new AutoRoutingMiddleware(['namespace' => 'MyPlugin\Controller', 'prefix' => '/my-plugin']);
-
-# limit to specific controllers
-new AutoRoutingMiddleware(['namespace' => 'App\Controller\Rest', 'prefix' => '/api']);
+# in your plugins/{PluginName}/routes.php file
+(new AutoRouter($builder, 'MyPlugin\Controller'))->buildResources();
 ```
-
-When you are done exploring and ready to create production routes simply remove AutoRoutingMiddleware and use the 
-console commands below to get started.
 
 ## Create Routes
 
-Generate routes from your existing controllers CRUD actions with mixerapi:rest create routes:
+While AutoRouter makes life easy, it must scan your controllers to build RESTful resources. This has a slight 
+performance penalty. No worry, you can use `mixerapi:rest route create` to code your routes for you. This will write 
+routes directly to your routes.php file.
 
 ```bash
 # writes to `config/routes.php`
 bin/cake mixerapi:rest route create
 ```
 
-Running the above command will generate routes for all `App\Controller` controllers with a prefix of `/`. You can 
-modify this behavior using the `--namespace` and `--prefix` options. For example, to only generate routes for 
-`App\Controller\Rest` controllers with a prefix of `/api`:
+Use `--prefix` to specify a prefix: 
 
 ```bash
-bin/cake mixerapi:rest route create --namespace App\Controller\Rest --prefix /api
+bin/cake mixerapi:rest route create --prefix /api
 ```
 
-For plugins use the `--plugin` option:
+Use `--plugin` for plugins:
 
 ```bash
-# writes `plugins/{YourPlugin}/config/routes.php`
-bin/cake mixerapi:rest route create --plugin {MyPlugin}
+# writes to `plugins/MyPlugin/config/routes.php`
+bin/cake mixerapi:rest route create --plugin MyPlugin
 ```
 
 To perform a dry-run use the `--display` option:
 
 ```bash
-# prints routes to the console
 bin/cake mixerapi:rest route create --display 
 ```
 
@@ -119,7 +103,15 @@ This works similar to `bin/cake routes` but shows only RESTful routes and improv
 bin/cake mixerapi:rest route list
 ```
 
-This command will not show AutoRoutingMiddleware routes since those are built at runtime.
+To limit output to a specific plugin use the `--plugin` option:
+
+```bash
+# limit to a plugin:
+bin/cake mixerapi:rest route list --plugin MyPlugin
+
+#limit to main application:
+bin/cake mixerapi:rest route list --plugin App
+```
 
 ## Unit Tests
 

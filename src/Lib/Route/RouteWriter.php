@@ -39,13 +39,24 @@ class RouteWriter
     private $prefix;
 
     /**
+     * @var string
+     */
+    private $plugin;
+
+    /**
      * @param \MixerApi\Rest\Lib\Controller\ReflectedControllerDecorator[] $resources ReflectedControllerDecorator[]
      * @param string $baseNamespace a base namespace
      * @param string $configDir an absolute directory path to userland CakePHP config
      * @param string $prefix route prefix (e.g `/`)
+     * @param string $plugin route prefix (e.g `/`)
      */
-    public function __construct(array $resources, string $baseNamespace, string $configDir, string $prefix)
-    {
+    public function __construct(
+        array $resources,
+        string $baseNamespace,
+        string $configDir,
+        string $prefix,
+        ?string $plugin = null
+    ) {
         if (!is_dir($configDir)) {
             throw new RunTimeException("Directory does not exist `$configDir`");
         }
@@ -53,7 +64,8 @@ class RouteWriter
         $this->resources = $resources;
         $this->baseNamespace = $baseNamespace;
         $this->configDir = $configDir;
-        $this->prefix = $prefix; // @todo needed for future scope implementation
+        $this->prefix = $prefix;
+        $this->plugin = $plugin;
     }
 
     /**
@@ -117,5 +129,13 @@ class RouteWriter
     public function getPrefix(): string
     {
         return $this->prefix;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPlugin(): ?string
+    {
+        return $this->plugin;
     }
 }

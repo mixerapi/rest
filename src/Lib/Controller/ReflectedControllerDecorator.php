@@ -41,7 +41,7 @@ class ReflectedControllerDecorator
             } catch (ReflectionException $e) {
                 throw new RunTimeException(
                     "Unable to create ReflectionClass using `$controller`. Maybe check your namespace? " .
-                    "ReflectionException: " . $e->getMessage()
+                    'ReflectionException: ' . $e->getMessage()
                 );
             }
         } elseif ($controller instanceof ReflectionClass) {

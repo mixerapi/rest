@@ -21,9 +21,4 @@ class RouteDecoratorFactoryTest extends TestCase
         $this->assertIsArray($routeDecorators);
         $this->assertInstanceOf(RouteDecorator::class,reset($routeDecorators));
     }
-
-    public function testCreateFromReflectedControllerDecoratorWithPlugin()
-    {
-        $this->markTestIncomplete();
-    }
 }

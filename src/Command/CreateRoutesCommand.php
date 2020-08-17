@@ -33,7 +33,7 @@ class CreateRoutesCommand extends Command
                 'help' => 'Display what routes will be created only, will not write to files',
             ])
             ->addOption('plugin', [
-                'help' => 'Specify a plugin',
+                'help' => 'Specify a plugin (e.g. MyPlugin)',
             ])
             ->addOption('namespace', [
                 'help' => 'A base namespace (e.g. App\Controller or App\Api\Controller)',
@@ -66,10 +66,10 @@ class CreateRoutesCommand extends Command
         $io->hr();
 
         if ($args->getOption('plugin')) {
-            $namespace = $args->getOption('plugin');
+            $namespace = Configure::read('App.namespace') ?? $args->getOption('plugin');
             $plugins = Configure::read('App.paths.plugins');
-            $prefix = Inflector::dasherize($namespace);
-            $configDir = reset($plugins) . DS . $args->getOption('plugin');
+            $prefix = $args->getOption('prefix') ?? '/' . Inflector::dasherize($namespace);
+            $configDir = reset($plugins) . $args->getOption('plugin') . DS . 'config' . DS;
         } else {
             $namespace = Configure::read('App.namespace');
             $prefix = '/';
@@ -94,7 +94,8 @@ class CreateRoutesCommand extends Command
                 $this->abort();
             }
 
-            (new RouteWriter($controllers, $namespace, $configDir, $prefix))->merge($file);
+            (new RouteWriter($controllers, $namespace, $configDir, $prefix, $args->getOption('plugin')))
+                ->merge($file);
             $io->success('> Routes were written to ' . $configDir . $file);
             $io->out();
 
@@ -115,6 +116,6 @@ class CreateRoutesCommand extends Command
             );
         }
 
-        (new RouteTable($io, $routeDecorators))->output();
+        (new RouteTable($io, $args, $routeDecorators))->output();
     }
 }

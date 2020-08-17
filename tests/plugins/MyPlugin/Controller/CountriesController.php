@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace MixerApi\Rest\Test\App\Controller;
+namespace MixerApi\Rest\Test\MyPlugin\Controller;
 
 /**
  * Countries Controller

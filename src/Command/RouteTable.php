@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace MixerApi\Rest\Command;
 
+use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
 
 /**
@@ -20,17 +21,24 @@ class RouteTable
     private $io;
 
     /**
+     * @var \Cake\Console\Arguments
+     */
+    private $args;
+
+    /**
      * @var \MixerApi\Rest\Lib\Route\RouteDecorator[]
      */
     private $routeDecorators;
 
     /**
      * @param \Cake\Console\ConsoleIo $io ConsoleIo
+     * @param \Cake\Console\Arguments $args Arguments
      * @param \MixerApi\Rest\Lib\Route\RouteDecorator[] $routeDecorators Array of RouteDecorator
      */
-    public function __construct(ConsoleIo $io, array $routeDecorators)
+    public function __construct(ConsoleIo $io, Arguments $args, array $routeDecorators)
     {
         $this->io = $io;
+        $this->args = $args;
         $this->routeDecorators = $routeDecorators;
     }
 
@@ -46,6 +54,15 @@ class RouteTable
         ];
 
         foreach ($this->routeDecorators as $route) {
+            if ($this->args->getOption('plugin') !== null) {
+                $plugin = $this->args->getOption('plugin');
+                $plugin = $plugin == 'App' ? null : trim($this->args->getOption('plugin'));
+
+                if ($route->getPlugin() != $plugin) {
+                    continue;
+                }
+            }
+
             $output[] = [
                 $route->getName(),
                 $route->getTemplate(),

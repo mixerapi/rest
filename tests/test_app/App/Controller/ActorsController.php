@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace MixerApi\Rest\Test\App\Controller;
 
-
 /**
  * Actors Controller
  *
