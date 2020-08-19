@@ -3,8 +3,12 @@ declare(strict_types=1);
 
 namespace MixerApi\Rest\Lib\Route;
 
+use MixerApi\Rest\Lib\Exception\RouteScopeNotFound;
 use MixerApi\Rest\Lib\Exception\RunTimeException;
-use MixerApi\Rest\Lib\Parser\RouteScopeVisitor;
+use MixerApi\Rest\Lib\Parser\RouteScopeFinder;
+use MixerApi\Rest\Lib\Parser\RouteScopeModifier;
+use PhpParser\Node;
+use PhpParser\NodeFinder;
 use PhpParser\NodeTraverser;
 use PhpParser\ParserFactory;
 use PhpParser\PrettyPrinter\Standard;
@@ -90,11 +94,25 @@ class RouteWriter
         $parser = (new ParserFactory())->create(ParserFactory::PREFER_PHP7);
         $ast = $parser->parse($contents);
 
-        $traverser = new NodeTraverser();
-        $traverser->addVisitor(new RouteScopeVisitor($this));
+        $routeScopeFinder = new RouteScopeFinder($this);
 
-        $ast = $traverser->traverse($ast);
-        $code = (new Standard())->prettyPrintFile($ast);
+        $nodes = (new NodeFinder())->find($ast, function (Node $node) use ($routeScopeFinder) {
+            return $routeScopeFinder->finder($node);
+        });
+
+        if (empty($nodes)) {
+            throw new RouteScopeNotFound(
+                'No route scope or route plugin was found for the given arguments. Try adding one to your ' .
+                'routes.php before trying again'
+            );
+        }
+
+        $traverser = new NodeTraverser();
+        $traverser->addVisitor(new RouteScopeModifier($this));
+
+        $nodes = $traverser->traverse($ast);
+
+        $code = (new Standard())->prettyPrintFile($nodes);
 
         file_put_contents($routesFile, $code);
     }

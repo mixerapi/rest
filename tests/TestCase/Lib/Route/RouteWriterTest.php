@@ -11,34 +11,49 @@ use MixerApi\Rest\Lib\Route\RouteWriter;
 
 class RouteWriterTest extends TestCase
 {
-    private const ROUTE_FILE = 'routes_test.php';
     private const ROUTE_BASE = 'routes_base.php';
+    private const ROUTE_FILE = 'routes_test.php';
+
+    private $pluginConfig;
 
     public function setUp(): void
     {
         parent::setUp();
+        $this->pluginConfig = TEST . 'plugins' . DS . 'MyPlugin' . DS . 'config' . DS;
+
+        touch(CONFIG . self::ROUTE_FILE);
+        touch($this->pluginConfig . self::ROUTE_FILE);
+
         copy(CONFIG . self::ROUTE_BASE, CONFIG . self::ROUTE_FILE);
+        copy($this->pluginConfig . self::ROUTE_BASE, $this->pluginConfig . self::ROUTE_FILE);
     }
 
     public function testConstruct()
     {
+        $resourceScanner = new ResourceScanner('MixerApi\Rest\Test\App\Controller');
+        $resources = $resourceScanner->getControllerDecorators();
 
-        $resources = (new ResourceScanner('MixerApi\Rest\Test\App\Controller'))->getControllerDecorators();
+        $routeWriter = new RouteWriter(
+            $resources,
+            'MixerApi\Rest\Test\App\Controller',
+            CONFIG,
+            '/'
+        );
 
-        $rw = (new RouteWriter($resources,'MixerApi\Rest\Test\App\Controller', CONFIG, '/'));
-
-        $this->assertEquals($resources, $rw->getResources());
-        $this->assertEquals(CONFIG, $rw->getConfigDir());
-        $this->assertEquals('/', $rw->getPrefix());
+        $this->assertEquals($resources, $routeWriter->getResources());
+        $this->assertEquals(CONFIG, $routeWriter->getConfigDir());
+        $this->assertEquals('/', $routeWriter->getPrefix());
     }
 
     public function testConstructException()
     {
         $this->expectException(RunTimeException::class);
 
-        $resources = (new ResourceScanner('MixerApi\Rest\Test\App\Controller'))->getControllerDecorators();
+        $namespace = 'MixerApi\Rest\Test\App\Controller';
 
-        new RouteWriter($resources, 'MixerApi\Rest\Test\App\Controller','/nope/and/nope', '/');
+        $resources = (new ResourceScanner($namespace))->getControllerDecorators();
+
+        new RouteWriter($resources, $namespace, '/nope/and/nope', '/');
     }
 
     /**
@@ -46,10 +61,11 @@ class RouteWriterTest extends TestCase
      */
     public function testMerge()
     {
-        $resources = (new ResourceScanner('MixerApi\Rest\Test\App\Controller'))->getControllerDecorators();
+        $namespace = 'MixerApi\Rest\Test\App\Controller';
 
-        (new RouteWriter($resources,'MixerApi\Rest\Test\App\Controller', CONFIG, '/'))
-            ->merge(self::ROUTE_FILE);
+        $resources = (new ResourceScanner($namespace))->getControllerDecorators();
+
+        (new RouteWriter($resources, $namespace, CONFIG, '/'))->merge(self::ROUTE_FILE);
 
         $contents = file_get_contents(CONFIG . self::ROUTE_FILE);
 
@@ -63,5 +79,63 @@ class RouteWriterTest extends TestCase
             "\$builder->resources('Languages', ['path' => 'sub/languages', 'prefix' => 'Sub']);",
             $contents
         );
+    }
+
+    /**
+     * Test merge on regular Plugin\Controller
+     */
+    public function testPlugin()
+    {
+        $namespace = 'MixerApi\Rest\Test\MyPlugin\Controller';
+
+        $resources = (new ResourceScanner($namespace))->getControllerDecorators();
+
+        $routeWriter = new RouteWriter(
+            $resources,
+            $namespace,
+            $this->pluginConfig,
+            '/my-plugin',
+            'MyPlugin'
+        );
+
+        $routeWriter->merge(self::ROUTE_FILE);
+
+        $contents = file_get_contents($this->pluginConfig . self::ROUTE_FILE);
+        $this->assertTextContains("\$builder->resources('Countries')", $contents);
+        $this->assertTextContains("Router::plugin('MyPlugin', ['path' => '/my-plugin'],", $contents);
+    }
+
+    /**
+     * Undefined scope prefix throws exception
+     */
+    public function testUndefinedScope()
+    {
+        $this->expectException(\MixerApi\Rest\Lib\Exception\RouteScopeNotFound::class);
+        $namespace = 'MixerApi\Rest\Test\App\Controller';
+
+        $resources = (new ResourceScanner($namespace))->getControllerDecorators();
+
+        (new RouteWriter($resources, $namespace, CONFIG, '/nope'))->merge(self::ROUTE_FILE);
+
+        $contents = file_get_contents(CONFIG . self::ROUTE_FILE);
+
+        echo $contents; die;
+    }
+
+    /**
+     * Undefined plugin scope throws exception
+     */
+    public function testUndefinedPluginScope()
+    {
+        $this->expectException(\MixerApi\Rest\Lib\Exception\RouteScopeNotFound::class);
+        $namespace = 'MixerApi\Rest\Test\App\Controller';
+
+        $resources = (new ResourceScanner($namespace))->getControllerDecorators();
+
+        (new RouteWriter($resources, $namespace, CONFIG, '/', 'Nope'))->merge(self::ROUTE_FILE);
+
+        $contents = file_get_contents(CONFIG . self::ROUTE_FILE);
+
+        echo $contents; die;
     }
 }

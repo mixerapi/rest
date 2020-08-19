@@ -3,6 +3,6 @@
 use Cake\Routing\Router;
 use Cake\Routing\RouteBuilder;
 
-Router::plugin('Admin', ['path' => '/admin'], function (RouteBuilder $builder) {
+Router::plugin('MyPlugin', ['path' => '/my-plugin'], function (RouteBuilder $builder) {
 
 });

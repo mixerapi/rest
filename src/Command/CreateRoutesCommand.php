@@ -66,9 +66,9 @@ class CreateRoutesCommand extends Command
         $io->hr();
 
         if ($args->getOption('plugin')) {
-            $namespace = Configure::read('App.namespace') ?? $args->getOption('plugin');
+            $namespace = $args->getOption('namespace') ?? $args->getOption('plugin');
             $plugins = Configure::read('App.paths.plugins');
-            $prefix = $args->getOption('prefix') ?? '/' . Inflector::dasherize($namespace);
+            $prefix = $args->getOption('prefix') ?? '/' . Inflector::dasherize($args->getOption('plugin'));
             $configDir = reset($plugins) . $args->getOption('plugin') . DS . 'config' . DS;
         } else {
             $namespace = Configure::read('App.namespace');

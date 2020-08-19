@@ -10,12 +10,11 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Expr\StaticCall;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\NodeVisitorAbstract;
 
-class RouteScopeVisitor extends NodeVisitorAbstract
+class RouteScopeModifier extends NodeVisitorAbstract
 {
     /**
      * @var \MixerApi\Rest\Lib\Route\RouteWriter
@@ -36,11 +35,13 @@ class RouteScopeVisitor extends NodeVisitorAbstract
      */
     public function enterNode(Node $node): Node
     {
-        if ($this->isRouteScope($node)) {
+        $routeScopeFinder = new RouteScopeFinder($this->routeWriter);
+
+        if ($routeScopeFinder->hasValidScope($node)) {
             return $this->scope($node);
         }
 
-        if ($this->isRoutePlugin($node)) {
+        if ($routeScopeFinder->hasValidPlugin($node)) {
             return $this->plugin($node);
         }
 
@@ -55,19 +56,7 @@ class RouteScopeVisitor extends NodeVisitorAbstract
      */
     private function scope(Node $node): Node
     {
-        if (!isset($node->args)) {
-            return $node;
-        }
-
-        if (!isset($node->args[0]->value->value)) {
-            throw new RunTimeException('Route->scope should have a prefix');
-        }
-
-        if ($node->args[0]->value->value !== $this->routeWriter->getPrefix()) {
-            return $node;
-        }
-
-        $node->args = $this->buildRouteArgs($node->args);
+        $node->args = $this->buildRouteArgs($node->args); // @phpstan-ignore-line
 
         return $node;
     }
@@ -80,27 +69,9 @@ class RouteScopeVisitor extends NodeVisitorAbstract
      */
     private function plugin(Node $node): Node
     {
-        // @phpstan-ignore-next-line
-        if (!isset($node->expr->args)) {
-            return $node;
-        }
-
-        if (!isset($node->expr->args[0]->value->value)) {
-            throw new RunTimeException('Route::plugin should have a plugin name defined');
-        }
-
-        if ($node->expr->args[0]->value->value !== $this->routeWriter->getPlugin()) {
-            return $node;
-        }
-
-        if (!isset($node->expr->args[1]->value) || !$node->expr->args[1]->value instanceof Array_) {
-            throw new RunTimeException('Route::plugin should have a prefix');
-        }
-
         $matchingPrefixes = array_filter(
-            $node->expr->args[1]->value->items,
+            $node->expr->args[1]->value->items, // @phpstan-ignore-line
             function ($value) {
-                // @phpstan-ignore-next-line
                 return $value->key->value == 'path' && $value->value->value == $this->routeWriter->getPrefix();
             }
         );
@@ -112,7 +83,7 @@ class RouteScopeVisitor extends NodeVisitorAbstract
             );
         }
 
-        $node->expr->args = $this->buildRouteArgs($node->expr->args);
+        $node->expr->args = $this->buildRouteArgs($node->expr->args); // @phpstan-ignore-line
 
         return $node;
     }
@@ -125,7 +96,7 @@ class RouteScopeVisitor extends NodeVisitorAbstract
      */
     private function buildRouteArgs(array $args): array
     {
-        $return = [];
+        $merge = [];
 
         foreach ($args as $i => $arg) {
             if (!$arg->value instanceof Closure) {
@@ -138,10 +109,10 @@ class RouteScopeVisitor extends NodeVisitorAbstract
             );
 
             $arg->value->stmts = $stmts;
-            $return[$i] = $arg;
+            $merge[$i] = $arg;
         }
 
-        return $return;
+        return array_merge_recursive($args, $merge);
     }
 
     /**
@@ -218,26 +189,5 @@ class RouteScopeVisitor extends NodeVisitorAbstract
         }
 
         return false;
-    }
-
-    /**
-     * @param \PhpParser\Node $node instance of Node
-     * @return bool
-     */
-    private function isRouteScope(Node $node): bool
-    {
-        return $node instanceof MethodCall && $node->name->name == 'scope';
-    }
-
-    /**
-     * @param \PhpParser\Node $node instance of Node
-     * @return bool
-     */
-    private function isRoutePlugin(Node $node): bool
-    {
-        return isset($node->expr)
-            && $node->expr instanceof StaticCall
-            && isset($node->expr->name->name)
-            && $node->expr->name->name == 'plugin';
     }
 }

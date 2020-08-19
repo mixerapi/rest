@@ -26,8 +26,10 @@ class CreateRoutesCommandTest extends TestCase
         $this->setAppNamespace('MixerApi\Rest\Test\App');
         $this->useCommandRunner();
         $pluginConfig = TEST . 'plugins' . DS . 'MyPlugin' . DS . 'config' . DS;
+
         touch(CONFIG . self::ROUTE_FILE);
         touch($pluginConfig . self::ROUTE_FILE);
+
         copy(CONFIG . self::ROUTE_BASE, CONFIG . self::ROUTE_FILE);
         copy($pluginConfig . self::ROUTE_BASE, $pluginConfig . self::ROUTE_FILE);
     }
@@ -45,7 +47,7 @@ class CreateRoutesCommandTest extends TestCase
         $file = self::ROUTE_FILE;
         $ns = 'MixerApi\Rest\Test\MyPlugin\Controller';
         $plugin = 'MyPlugin';
-        $this->exec("mixerapi:rest route create --routesFile $file --plugin $plugin", ['Y']);
+        $this->exec("mixerapi:rest route create --namespace $ns --routesFile $file --plugin $plugin", ['Y']);
         $this->assertOutputContains('Routes were written');
         $this->assertExitSuccess();
     }
@@ -69,7 +71,6 @@ class CreateRoutesCommandTest extends TestCase
 
     public function testNoControllersExitError()
     {
-        $this->expectException(RunTimeException::class);
         $file = self::ROUTE_FILE;
         $this->exec("mixerapi:rest route create --routesFile $file --plugin Nope", ['Y']);
         $this->assertExitError();
