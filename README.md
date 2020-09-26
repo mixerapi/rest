@@ -20,6 +20,12 @@ This plugin assumes you have already created models and controllers. For help wi
 [RESTful routing](https://book.cakephp.org/4/en/development/routing.html#restful-routing) documentation 
 for handling advanced routing scenarios not covered by this plugin.
 
+## Table of Contents
+
+- [Installation](#installation)
+- [AutoRouter](#autorouter)
+- [Create Routes](#create-routes)
+
 ## Installation
 
 ```bash
