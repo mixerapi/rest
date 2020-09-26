@@ -22,6 +22,10 @@ class Application extends BaseApplication
 
     }
 
+    /**
+     * @param CommandCollection $commands
+     * @return CommandCollection
+     */
     public function console(CommandCollection $commands): CommandCollection
     {
         return $commands;
