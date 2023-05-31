@@ -8,7 +8,7 @@
         "php": "^8.0",
         "cakephp/cakephp": "^5.0",
         "nikic/php-parser": "^4.8",
-        "masakni/class-explorer": "2.1.x-dev",
+        "masakni/class-explorer": "dev-master",
         "psr/simple-cache": "^3.0"
     },
     "autoload": {
