@@ -6,7 +6,7 @@
     "keywords": ["cakephp rest","cakephp5 rest","cakephp rest bake"],
     "require": {
         "php": "^8.0",
-        "cakephp/cakephp": "^5.0",
+        "cakephp/cakephp": "5.x-dev",
         "nikic/php-parser": "^4.8",
         "masakni/class-explorer": "dev-master",
         "psr/simple-cache": "^3.0"
